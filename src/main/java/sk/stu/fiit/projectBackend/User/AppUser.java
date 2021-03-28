@@ -91,11 +91,21 @@ public class AppUser implements UserDetails {
     )
     private LocalDate updatedAt;
     
-    @Column(
-            nullable = false
-    )
     private LocalDate deletedAt;
 
+    public AppUser(String email, String password, AppUserTypes type,
+            String firstName, String lastName, LocalDate dateOfBirth,
+            byte[] photo) {
+        this.email = email;
+        this.password = password;
+        this.type = type;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.photo = photo;
+        this.createdAt = LocalDate.now();
+        this.updatedAt = LocalDate.now();
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(type.name());
