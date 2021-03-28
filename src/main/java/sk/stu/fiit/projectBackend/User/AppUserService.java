@@ -55,7 +55,7 @@ public class AppUserService implements UserDetailsService {
         request.setPassword(hashedPassword);
         
         AppUser user = new AppUser(request.getEmail(), hashedPassword,
-                request.getType(), request.getFirstName(), request.getLastName(),
+                AppUserTypes.valueOf(request.getType()), request.getFirstName(), request.getLastName(),
                 request.getDateOfBirth(), request.getPhoto());
 
         appUserRepository.save(user);

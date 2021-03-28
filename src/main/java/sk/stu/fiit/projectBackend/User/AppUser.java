@@ -6,6 +6,7 @@
 package sk.stu.fiit.projectBackend.User;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
@@ -84,14 +85,14 @@ public class AppUser implements UserDetails {
     @Column(
             nullable = false
     )
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
     
     @Column(
             nullable = false
     )
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
     
-    private LocalDate deletedAt;
+    private LocalDateTime deletedAt;
 
     public AppUser(String email, String password, AppUserTypes type,
             String firstName, String lastName, LocalDate dateOfBirth,
@@ -103,8 +104,8 @@ public class AppUser implements UserDetails {
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.photo = photo;
-        this.createdAt = LocalDate.now();
-        this.updatedAt = LocalDate.now();
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
