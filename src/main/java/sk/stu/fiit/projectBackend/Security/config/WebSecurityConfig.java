@@ -5,6 +5,7 @@
  */
 package sk.stu.fiit.projectBackend.Security.config;
 
+import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,36 +28,56 @@ import sk.stu.fiit.projectBackend.filters.JWTFilter;
 @AllArgsConstructor
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    
+    private static final String[] WHITELIST = {
+            // -- Swagger UI v2
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            // -- Swagger UI v3 (OpenAPI)
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            
+            "/api/v*/register/",
+            "/api/v*/register",
+            "/api/v*/login/",
+            "/api/v*/login"
+    };
 
     private final AppUserService appUserService;
-    
+
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JWTFilter jwtFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests().antMatchers(
-                "/api/v*/register/", "/api/v*/login/").permitAll().anyRequest().
+                Arrays.asList(WHITELIST).toArray(String[]::new)).permitAll().anyRequest().
                 authenticated().and().exceptionHandling().and().
                 sessionManagement().sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS);
-        
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.addFilterBefore(jwtFilter,
+                UsernamePasswordAuthenticationFilter.class);
     }
-    
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider());
     }
-    
+
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
-        DaoAuthenticationProvider provider = 
-                new DaoAuthenticationProvider();
-        
+        DaoAuthenticationProvider provider
+                = new DaoAuthenticationProvider();
+
         provider.setPasswordEncoder(bCryptPasswordEncoder);
         provider.setUserDetailsService(appUserService);
-        
+
         return provider;
     }
 
