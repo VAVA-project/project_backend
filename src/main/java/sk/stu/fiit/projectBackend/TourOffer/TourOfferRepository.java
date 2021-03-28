@@ -6,7 +6,7 @@
 package sk.stu.fiit.projectBackend.TourOffer;
 
 import java.util.UUID;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -14,6 +14,6 @@ import org.springframework.stereotype.Repository;
  * @author Adam Bublavý
  */
 @Repository
-public interface TourOfferRepository extends PagingAndSortingRepository<TourOffer, UUID>  {
+public interface TourOfferRepository extends JpaRepository<TourOffer, UUID> {
     
 }

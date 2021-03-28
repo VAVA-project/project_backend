@@ -14,11 +14,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sk.stu.fiit.projectBackend.TourOffer.dto.CreateTourOfferRequest;
-import sk.stu.fiit.projectBackend.TourOffer.dto.CreateTourOfferResponse;
+import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferResponse;
+import sk.stu.fiit.projectBackend.TourOffer.dto.UpdateTourOfferRequest;
 
 /**
  *
@@ -32,7 +34,7 @@ public class TourOfferController {
     private final TourOfferService tourOfferService;
 
     @PostMapping(path = "/", consumes = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<CreateTourOfferResponse> createTourOffer(
+    public ResponseEntity<TourOfferResponse> createTourOffer(
             @Valid @RequestBody CreateTourOfferRequest request) {
         return ResponseEntity.ok(tourOfferService.createTourOffer(request));
     }
@@ -43,6 +45,13 @@ public class TourOfferController {
         HttpStatus responseStatus = tourOfferService.deleteTourOffer(id) ? HttpStatus.NO_CONTENT : HttpStatus.NOT_FOUND;
 
         return ResponseEntity.status(responseStatus).body(null);
+    }
+
+    @PutMapping(path = "/{tourOfferId}")
+    public ResponseEntity<TourOfferResponse> updateTourOffer(@PathVariable(
+            name = "tourOfferId") UUID id,
+            @Valid @RequestBody UpdateTourOfferRequest request) {
+        return ResponseEntity.ok(tourOfferService.updateTourOffer(id, request));
     }
 
 }

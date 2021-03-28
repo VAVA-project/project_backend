@@ -17,7 +17,7 @@ import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
  */
 @Data
 @AllArgsConstructor
-public class CreateTourOfferResponse {
+public class TourOfferResponse {
     
     private UUID id;
     private UUID creatorId;
@@ -30,7 +30,7 @@ public class CreateTourOfferResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
-    public CreateTourOfferResponse(TourOffer offer, UUID creatorId) {
+    public TourOfferResponse(TourOffer offer, UUID creatorId) {
         this.id = offer.getId();
         this.creatorId = creatorId;
         this.startPlace = offer.getStartPlace();
