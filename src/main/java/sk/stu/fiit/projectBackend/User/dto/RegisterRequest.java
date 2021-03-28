@@ -46,4 +46,6 @@ public class RegisterRequest {
     @PastOrPresent(message = "invalid range")
     private LocalDate dateOfBirth;
     
+    private byte[] photo;
+    
 }

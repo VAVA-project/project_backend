@@ -5,13 +5,20 @@
  */
 package sk.stu.fiit.projectBackend.User;
 
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import sk.stu.fiit.projectBackend.User.dto.LoginRequest;
+import sk.stu.fiit.projectBackend.User.dto.LoginResponse;
+import sk.stu.fiit.projectBackend.User.dto.RegisterRequest;
+import sk.stu.fiit.projectBackend.User.dto.RegisterResponse;
+import sk.stu.fiit.projectBackend.Utils.JWTUtil;
 import sk.stu.fiit.projectBackend.exceptions.EmailTakenException;
+import sk.stu.fiit.projectBackend.exceptions.IncorrectUsernameOrPasswordException;
 
 /**
  *
@@ -25,6 +32,7 @@ public class AppUserService implements UserDetailsService {
 
     private final AppUserRepository appUserRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JWTUtil jwtUtil;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws
@@ -33,22 +41,48 @@ public class AppUserService implements UserDetailsService {
                 () -> new UsernameNotFoundException(String.
                         format(USER_NOT_FOUND, email)));
     }
-
-    public AppUser register(AppUser user) {
-        boolean userExists = appUserRepository.findByEmail(user.getEmail()).
+    
+    public RegisterResponse register(RegisterRequest request) {
+        boolean userExists = appUserRepository.findByEmail(request.getEmail()).
                 isPresent();
 
         if (userExists) {
             throw new EmailTakenException("Email already taken");
         }
 
-        String hashedPassword = bCryptPasswordEncoder.encode(user.getPassword());
+        String hashedPassword = bCryptPasswordEncoder.encode(request.getPassword());
 
-        user.setPassword(hashedPassword);
+        request.setPassword(hashedPassword);
+        
+        AppUser user = new AppUser(request.getEmail(), hashedPassword,
+                request.getType(), request.getFirstName(), request.getLastName(),
+                request.getDateOfBirth(), request.getPhoto());
 
         appUserRepository.save(user);
         
-        return user;
+        String jwtToken = jwtUtil.generateToken(user);
+        
+        return new RegisterResponse(jwtToken);
+    }
+    
+    public LoginResponse login(LoginRequest request) {
+        Optional<AppUser> userOptional = appUserRepository.findByEmail(
+                request.getEmail());
+        
+        if(!userOptional.isPresent()) {
+            throw new IncorrectUsernameOrPasswordException("Incorrect username or password");
+        }
+        
+        AppUser user = userOptional.get();
+        
+        if(!bCryptPasswordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new IncorrectUsernameOrPasswordException("Incorrect username or password");
+            
+        }
+        
+        String jwtToken = jwtUtil.generateToken(user);
+        
+        return new LoginResponse(jwtToken);
     }
 
 }

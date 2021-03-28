@@ -49,9 +49,9 @@ public class JWTUtil implements Serializable {
         return extractExpirationDateFromToken(token).before(new Date());
     }
 
-    public String generateToken(String token) {
+    public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(token, claims);
+        return createToken(userDetails.getUsername(), claims);
     }
 
     private String createToken(String subject, Map<String, Object> claims) {
