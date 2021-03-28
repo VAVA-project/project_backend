@@ -48,13 +48,13 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String jwt = authorization.substring(JWT_PREFIX);
         String email = jwtUtil.extractUsernameFromToken(jwt);
-
+        
         if (email != null && SecurityContextHolder.getContext().
                 getAuthentication() == null) {
             UserDetails userDetails = this.appUserService.loadUserByUsername(
                     email);
 
-            if (jwtUtil.validateToken(email, userDetails)) {
+            if (jwtUtil.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                         = new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities());

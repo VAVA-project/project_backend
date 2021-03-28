@@ -60,5 +60,15 @@ public class TourOffer implements Serializable {
     private LocalDateTime updatedAt;
     
     private LocalDateTime deletedAt;
+
+    public TourOffer(String startPlace, String destinationPlace,
+            String description, double pricePerPerson) {
+        this.startPlace = startPlace;
+        this.destinationPlace = destinationPlace;
+        this.description = description;
+        this.pricePerPerson = pricePerPerson;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
     
 }
