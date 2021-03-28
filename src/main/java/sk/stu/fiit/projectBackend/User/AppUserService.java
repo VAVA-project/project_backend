@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import sk.stu.fiit.projectBackend.exceptions.EmailTakenException;
 
 /**
  *
@@ -38,7 +39,7 @@ public class AppUserService implements UserDetailsService {
                 isPresent();
 
         if (userExists) {
-            throw new IllegalStateException("Email already taken");
+            throw new EmailTakenException("Email already taken");
         }
 
         String hashedPassword = bCryptPasswordEncoder.encode(user.getPassword());

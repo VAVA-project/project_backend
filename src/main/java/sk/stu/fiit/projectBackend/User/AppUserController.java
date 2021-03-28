@@ -5,6 +5,7 @@
  */
 package sk.stu.fiit.projectBackend.User;
 
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class AppUserController {
 
     @PostMapping(path = "/register", consumes = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<AppUser> register(
-            @RequestBody RegisterRequest request) {
+            @Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(appUserService.register(new AppUser(request.
                 getEmail(),
                 request.getPassword(), request.getType(), request.getFirstName(),

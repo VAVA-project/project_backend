@@ -27,43 +27,49 @@ import sk.stu.fiit.projectBackend.Utils.JWTUtil;
 @Component
 @AllArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
-    
+
     private static final int JWT_PREFIX = 7;
-    
+
     private final JWTUtil jwtUtil;
     private final AppUserService appUserService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-            HttpServletResponse response, FilterChain fc) throws ServletException,
+            HttpServletResponse response, FilterChain fc) throws
+            ServletException,
             IOException {
-        
+
         String authorization = request.getHeader("Authorization");
-        
-        if(authorization == null || !authorization.startsWith("Bearer ")) {
+
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
             fc.doFilter(request, response);
             return;
         }
-        
+
         String jwt = authorization.substring(JWT_PREFIX);
         String email = jwtUtil.extractUsernameFromToken(jwt);
-        
-        if(email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.appUserService.loadUserByUsername(email);
-            
-            if(jwtUtil.validateToken(email, userDetails)) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                
-                usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(
+
+        if (email != null && SecurityContextHolder.getContext().
+                getAuthentication() == null) {
+            UserDetails userDetails = this.appUserService.loadUserByUsername(
+                    email);
+
+            if (jwtUtil.validateToken(email, userDetails)) {
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
+                        = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
+
+                usernamePasswordAuthenticationToken.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(
                                 request));
-                
+
                 SecurityContextHolder.getContext().setAuthentication(
                         usernamePasswordAuthenticationToken);
             }
-            
+
         }
-        
+
         fc.doFilter(request, response);
     }
-    
+
 }
