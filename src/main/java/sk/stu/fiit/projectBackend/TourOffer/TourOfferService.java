@@ -5,6 +5,9 @@
  */
 package sk.stu.fiit.projectBackend.TourOffer;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
 import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +24,8 @@ import sk.stu.fiit.projectBackend.User.AppUserRepository;
 @Service
 @AllArgsConstructor
 public class TourOfferService {
+    
+    private static final String USER_NOT_FOUND = "Fatal error, user not found";
 
     private final TourOfferRepository tourOfferRepository;
     private final AppUserRepository appUserRepository;
@@ -33,7 +38,7 @@ public class TourOfferService {
                 getAuthentication().getName();
 
         AppUser user = appUserRepository.findByEmail(userEmail).orElseThrow(
-                () -> new IllegalStateException("Fatal error, user not found")
+                () -> new IllegalStateException(USER_NOT_FOUND)
         );
 
         TourOffer newOffer = new TourOffer(request.getStartPlace(), request.
@@ -45,6 +50,29 @@ public class TourOfferService {
         TourOffer savedOffer = tourOfferRepository.save(newOffer);
 
         return new CreateTourOfferResponse(savedOffer, user.getId());
+    }
+
+    public boolean deleteTourOffer(UUID id) {
+        String userEmail = SecurityContextHolder.getContext().
+                getAuthentication().getName();
+        
+        AppUser user = appUserRepository.findByEmail(userEmail).orElseThrow(
+                () -> new IllegalStateException(USER_NOT_FOUND));
+
+        Optional<TourOffer> tourOfferOptional = user.getTourOffers().stream().
+                filter(e -> e.getId().equals(id)).findFirst();
+        
+        if(!tourOfferOptional.isPresent()) return false;
+        
+        TourOffer tourOffer = tourOfferOptional.get();
+        
+        if(tourOffer.getDeletedAt() != null) return false;
+        
+        tourOffer.setDeletedAt(LocalDateTime.now());
+        
+        tourOfferRepository.save(tourOffer);
+        
+        return true;
     }
 
 }

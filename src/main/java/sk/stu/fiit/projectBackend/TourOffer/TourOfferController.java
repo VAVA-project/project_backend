@@ -5,10 +5,14 @@
  */
 package sk.stu.fiit.projectBackend.TourOffer;
 
+import java.util.UUID;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,13 +28,21 @@ import sk.stu.fiit.projectBackend.TourOffer.dto.CreateTourOfferResponse;
 @RequestMapping(path = "api/v1/tourOffer")
 @AllArgsConstructor
 public class TourOfferController {
-    
+
     private final TourOfferService tourOfferService;
 
     @PostMapping(path = "/", consumes = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<CreateTourOfferResponse> createTourOffer(
             @Valid @RequestBody CreateTourOfferRequest request) {
         return ResponseEntity.ok(tourOfferService.createTourOffer(request));
+    }
+
+    @DeleteMapping(path = "/{tourOfferId}")
+    public ResponseEntity<?> deleteTourOffer(
+            @PathVariable(name = "tourOfferId") UUID id) {
+        HttpStatus responseStatus = tourOfferService.deleteTourOffer(id) ? HttpStatus.NO_CONTENT : HttpStatus.NOT_FOUND;
+
+        return ResponseEntity.status(responseStatus).body(null);
     }
 
 }
