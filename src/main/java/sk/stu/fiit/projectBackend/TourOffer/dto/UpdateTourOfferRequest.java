@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import sk.stu.fiit.projectBackend.validators.NullOrNotBlank;
 
 /**
  *
@@ -21,8 +22,13 @@ import lombok.ToString;
 @ToString
 public class UpdateTourOfferRequest {
     
+    @NullOrNotBlank
     private String startPlace;
+    
+    @NullOrNotBlank
     private String destinationPlace;
+    
+    @NullOrNotBlank
     private String description;
     
     @Positive(message = "price must be positive")

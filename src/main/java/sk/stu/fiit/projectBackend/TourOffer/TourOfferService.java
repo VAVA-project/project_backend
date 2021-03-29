@@ -17,6 +17,7 @@ import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferResponse;
 import sk.stu.fiit.projectBackend.TourOffer.dto.UpdateTourOfferRequest;
 import sk.stu.fiit.projectBackend.User.AppUser;
 import sk.stu.fiit.projectBackend.User.AppUserRepository;
+import sk.stu.fiit.projectBackend.exceptions.RecordNotFoundException;
 
 /**
  *
@@ -27,6 +28,7 @@ import sk.stu.fiit.projectBackend.User.AppUserRepository;
 public class TourOfferService {
 
     private static final String USER_NOT_FOUND = "Fatal error, user not found";
+    private static final String TOUR_OFFER_NOT_FOUND = "Tour offer with id %s not found";
 
     private final TourOfferRepository tourOfferRepository;
     private final AppUserRepository appUserRepository;
@@ -37,7 +39,7 @@ public class TourOfferService {
 
         String userEmail = SecurityContextHolder.getContext().
                 getAuthentication().getName();
-        
+
         AppUser user = appUserRepository.findByEmail(userEmail).orElseThrow(
                 () -> new IllegalStateException(USER_NOT_FOUND)
         );
@@ -80,7 +82,6 @@ public class TourOfferService {
         return true;
     }
 
-    @Transactional
     public TourOfferResponse updateTourOffer(UUID id,
             UpdateTourOfferRequest request) {
         String userEmail = SecurityContextHolder.getContext().
@@ -89,30 +90,32 @@ public class TourOfferService {
         AppUser user = appUserRepository.findByEmail(userEmail).orElseThrow(
                 () -> new IllegalStateException(USER_NOT_FOUND));
 
-        TourOffer tourOffer = tourOfferRepository.findById(id).orElseThrow(
-                () -> new IllegalStateException(
-                        "Tour offer with id " + id + " not found"));
-        
-        // TODO check if is deleted
-        
-        System.out.println(request);
-        
+        TourOffer tourOffer = user.getTourOffers().stream().filter(e -> e.
+                getId().equals(id)).findFirst().orElseThrow(
+                () -> new RecordNotFoundException(String.format(
+                        TOUR_OFFER_NOT_FOUND, id)));
+
+        if (tourOffer.getDeletedAt() != null) {
+            throw new RecordNotFoundException(String.
+                    format(TOUR_OFFER_NOT_FOUND, id));
+        }
+
         if (request.getStartPlace() != null) {
-            tourOffer.setStartPlace(tourOffer.getStartPlace());
+            tourOffer.setStartPlace(request.getStartPlace());
         }
         if (request.getDestinationPlace() != null) {
-            tourOffer.setDestinationPlace(tourOffer.getDestinationPlace());
+            tourOffer.setDestinationPlace(request.getDestinationPlace());
         }
         if (request.getDescription() != null) {
-            System.out.println("Activated");
-            tourOffer.setDescription(tourOffer.getDescription());
+            tourOffer.setDescription(request.getDescription());
         }
         if (request.getPricePerPerson() != null) {
-            System.out.println("Activated per");
-            tourOffer.setPricePerPerson(tourOffer.getPricePerPerson());
+            tourOffer.setPricePerPerson(request.getPricePerPerson());
         }
-        
-        return new TourOfferResponse(tourOffer, user.getId());
+
+        TourOffer updatedOffer = tourOfferRepository.save(tourOffer);
+
+        return new TourOfferResponse(updatedOffer, user.getId());
     }
 
 }

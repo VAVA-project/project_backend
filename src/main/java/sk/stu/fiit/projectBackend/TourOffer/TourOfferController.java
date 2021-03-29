@@ -53,5 +53,5 @@ public class TourOfferController {
             @Valid @RequestBody UpdateTourOfferRequest request) {
         return ResponseEntity.ok(tourOfferService.updateTourOffer(id, request));
     }
-
+    
 }
