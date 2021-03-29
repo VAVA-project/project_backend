@@ -10,9 +10,14 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import sk.stu.fiit.projectBackend.TourOffer.dto.CreateTourOfferRequest;
+import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferPage;
 import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferResponse;
 import sk.stu.fiit.projectBackend.TourOffer.dto.UpdateTourOfferRequest;
 import sk.stu.fiit.projectBackend.User.AppUser;
@@ -116,6 +121,20 @@ public class TourOfferService {
         TourOffer updatedOffer = tourOfferRepository.save(tourOffer);
 
         return new TourOfferResponse(updatedOffer, user.getId());
+    }
+
+    public Page<TourOffer> getUsersTourOffers(TourOfferPage page) {
+        String userEmail = SecurityContextHolder.getContext().
+                getAuthentication().getName();
+
+        AppUser user = appUserRepository.findByEmail(userEmail).orElseThrow(
+                () -> new IllegalStateException(USER_NOT_FOUND));
+        
+        Sort sort = Sort.by(page.getSortDirection(), page.getSortBy());
+        Pageable pageable = PageRequest.of(page.getPageNumber(), page.
+                getPageSize(), sort);
+
+        return appUserRepository.findAllByUserId(user.getId(), pageable);
     }
 
 }
