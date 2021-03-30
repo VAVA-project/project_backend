@@ -32,7 +32,7 @@ public class TourDateResponse {
         this.tourOfferId = tourOfferId;
         this.startDate = tourDate.getStartDate();
         this.endDate = tourDate.getEndDate();
-        this.numberOfTickets = tourDate.getNumberOfTickets();
+        this.numberOfTickets = tourDate.getTickets().size();
         this.createdAt = tourDate.getCreatedAt();
         this.updatedAt = tourDate.getUpdatedAt();
     }

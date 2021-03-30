@@ -28,6 +28,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import sk.stu.fiit.projectBackend.Ticket.Ticket;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 
 /**
@@ -107,6 +108,13 @@ public class AppUser implements UserDetails {
             updatable = false
     )
     private List<TourOffer> tourOffers;
+    
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(
+            name = "lockerId",
+            referencedColumnName = "id"
+    )
+    private List<Ticket> tickets;
     
     public AppUser(String email, String password, AppUserTypes type,
             String firstName, String lastName, LocalDate dateOfBirth,

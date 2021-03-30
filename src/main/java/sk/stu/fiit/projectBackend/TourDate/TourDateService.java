@@ -6,14 +6,15 @@
 package sk.stu.fiit.projectBackend.TourDate;
 
 import java.util.UUID;
+import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import sk.stu.fiit.projectBackend.Ticket.Ticket;
 import sk.stu.fiit.projectBackend.TourDate.dto.CreateTourDateRequest;
 import sk.stu.fiit.projectBackend.TourDate.dto.TourDateResponse;
 import sk.stu.fiit.projectBackend.TourDate.dto.UpdateTourDateRequest;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
-import sk.stu.fiit.projectBackend.TourOffer.TourOfferRepository;
 import sk.stu.fiit.projectBackend.User.AppUser;
 import sk.stu.fiit.projectBackend.User.AppUserRepository;
 import sk.stu.fiit.projectBackend.exceptions.RecordNotFoundException;
@@ -30,9 +31,9 @@ public class TourDateService {
     private static final String TOUR_DATE_NOT_FOUND = "Tour date with id %s not found";
 
     private final TourDateRepository tourDateRepository;
-    private final TourOfferRepository tourOfferRepository;
     private final AppUserRepository appUserRepository;
 
+    @Transactional
     public TourDateResponse createTourDate(UUID id,
             CreateTourDateRequest request) {
         if (request.getStartDate().isAfter(request.getEndDate())) {
@@ -55,14 +56,17 @@ public class TourDateService {
         }
 
         TourDate newTourDate = new TourDate(request.getStartDate(), request.
-                getEndDate(), request.getNumberOfTickets());
+                getEndDate());
 
-        // TODO create exact amount of tickets
         tourOffer.getTourDates().add(newTourDate);
-
-        TourDate savedTourDate = tourDateRepository.save(newTourDate);
-
-        return new TourDateResponse(savedTourDate, id);
+        
+        for (int index = 0; index < request.getNumberOfTickets(); index++) {
+            newTourDate.getTickets().add(new Ticket());
+        }
+        
+        newTourDate = tourDateRepository.save(newTourDate);
+        
+        return new TourDateResponse(newTourDate, id);
     }
 
     public TourDateResponse updateTourDate(UUID tourOfferId, UUID tourDateId,
