@@ -41,5 +41,5 @@ public class AppUserController {
         
         return ResponseEntity.ok(appUserService.login(request));
     }
-
+    
 }

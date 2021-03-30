@@ -24,8 +24,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(EmailTakenException.class)
-    protected ResponseEntity<Object> handleEmailTaken(EmailTakenException e) {
+    @ExceptionHandler({EmailTakenException.class, RecordNotFoundException.class})
+    protected ResponseEntity<Object> handleExceptions(RuntimeException e) {
         ApiException exception = new ApiException(HttpStatus.BAD_REQUEST, e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception);
     }

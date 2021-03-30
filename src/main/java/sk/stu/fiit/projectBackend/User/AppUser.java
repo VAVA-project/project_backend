@@ -9,13 +9,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +28,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 
 /**
  *
@@ -37,9 +42,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class AppUser implements UserDetails {
 
     @Id
-    @GeneratedValue(generator = "uuid")
+    @GeneratedValue(generator = "uuid_user")
     @GenericGenerator(
-            name = "uuid",
+            name = "uuid_user",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(
@@ -93,6 +98,15 @@ public class AppUser implements UserDetails {
     private LocalDateTime updatedAt;
     
     private LocalDateTime deletedAt;
+    
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(
+            name = "creatorId",
+            referencedColumnName = "id",
+            nullable = false,
+            updatable = false
+    )
+    private List<TourOffer> tourOffers;
 
     public AppUser(String email, String password, AppUserTypes type,
             String firstName, String lastName, LocalDate dateOfBirth,
