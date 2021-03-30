@@ -27,6 +27,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({EmailTakenException.class, RecordNotFoundException.class})
     protected ResponseEntity<Object> handleExceptions(RuntimeException e) {
         ApiException exception = new ApiException(HttpStatus.BAD_REQUEST, e);
+        System.out.println(e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception);
     }
 

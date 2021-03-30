@@ -107,7 +107,7 @@ public class AppUser implements UserDetails {
             updatable = false
     )
     private List<TourOffer> tourOffers;
-
+    
     public AppUser(String email, String password, AppUserTypes type,
             String firstName, String lastName, LocalDate dateOfBirth,
             byte[] photo) {

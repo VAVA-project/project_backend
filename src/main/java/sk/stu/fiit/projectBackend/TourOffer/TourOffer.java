@@ -7,17 +7,22 @@ package sk.stu.fiit.projectBackend.TourOffer;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
+import sk.stu.fiit.projectBackend.TourDate.TourDate;
 
 /**
  *
@@ -62,6 +67,15 @@ public class TourOffer implements Serializable {
     private LocalDateTime updatedAt;
     
     private LocalDateTime deletedAt;
+    
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(
+            name = "tourOfferId",
+            referencedColumnName = "id",
+            nullable = false,
+            updatable = false
+    )
+    private List<TourDate> tourDates;
 
     public TourOffer(String startPlace, String destinationPlace,
             String description, double pricePerPerson) {
