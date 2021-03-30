@@ -7,6 +7,7 @@ package sk.stu.fiit.projectBackend.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import sk.stu.fiit.projectBackend.Ticket.Ticket;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
+import sk.stu.fiit.projectBackend.UserOrder.UserOrder;
 
 /**
  *
@@ -115,6 +117,15 @@ public class AppUser implements UserDetails {
             referencedColumnName = "id"
     )
     private List<Ticket> tickets;
+    
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(
+            name = "userId",
+            referencedColumnName = "id",
+            nullable = false,
+            updatable = false
+    )
+    private List<UserOrder> orders = new ArrayList<>(0);
     
     public AppUser(String email, String password, AppUserTypes type,
             String firstName, String lastName, LocalDate dateOfBirth,
