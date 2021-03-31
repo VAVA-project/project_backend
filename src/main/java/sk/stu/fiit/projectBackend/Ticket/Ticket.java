@@ -14,12 +14,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import sk.stu.fiit.projectBackend.User.AppUser;
+import sk.stu.fiit.projectBackend.UserOrder.OrderTicket;
 
 /**
  *
@@ -57,6 +59,10 @@ public class Ticket implements Serializable {
     @ManyToOne
     @JoinColumn(name = "userId")
     private AppUser user;
+    
+    @OneToOne(mappedBy = "ticket")
+    private OrderTicket orderedTicket;
+    
 
     public Ticket() {
         this.createdAt = LocalDateTime.now();

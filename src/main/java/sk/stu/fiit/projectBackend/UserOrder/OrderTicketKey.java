@@ -8,6 +8,7 @@ package sk.stu.fiit.projectBackend.UserOrder;
 import java.io.Serializable;
 import java.util.UUID;
 import lombok.Data;
+import sk.stu.fiit.projectBackend.Ticket.Ticket;
 
 /**
  *
@@ -16,7 +17,7 @@ import lombok.Data;
 @Data
 public class OrderTicketKey implements Serializable {
     
-    private UUID ticketId;
+    private Ticket ticket;
     private UUID orderId;
     
 }
