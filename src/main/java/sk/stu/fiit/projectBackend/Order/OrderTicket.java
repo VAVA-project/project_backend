@@ -22,7 +22,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import sk.stu.fiit.projectBackend.TourDate.Ticket;
-import sk.stu.fiit.projectBackend.User.AppUser;
 
 /**
  *
@@ -55,15 +54,6 @@ public class OrderTicket implements Serializable {
     )
     private Ticket ticket;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-            name = "userId",
-            referencedColumnName = "id",
-            nullable = false
-    )
-    @JsonIgnore
-    private AppUser user;
-    
     @Column(
             nullable = false,
             updatable = false
@@ -79,9 +69,8 @@ public class OrderTicket implements Serializable {
     @JsonIgnore
     private Order order;
 
-    public OrderTicket(Ticket ticket, AppUser user, double price) {
+    public OrderTicket(Ticket ticket, double price) {
         this.ticket = ticket;
-        this.user = user;
         this.price = price;
     }
     

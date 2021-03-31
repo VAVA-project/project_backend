@@ -44,4 +44,9 @@ public class CartItemController {
         return ResponseEntity.ok(cartItemService.getCartContent());
     }
     
+    @PostMapping(path = "/checkout")
+    public ResponseEntity<Object> checkout() {
+        return ResponseEntity.ok(cartItemService.checkout());
+    }
+    
 }

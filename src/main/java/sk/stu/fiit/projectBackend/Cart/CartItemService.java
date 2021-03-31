@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import sk.stu.fiit.projectBackend.Cart.dto.CartResponse;
+import sk.stu.fiit.projectBackend.Order.OrderRepository;
 import static sk.stu.fiit.projectBackend.Other.Constants.TICKET_ALREADY_PURCHASED;
 import static sk.stu.fiit.projectBackend.Other.Constants.TICKET_NOT_FOUND;
 import sk.stu.fiit.projectBackend.TourDate.Ticket;
@@ -35,6 +36,7 @@ public class CartItemService {
     private final TicketRepository ticketRepository;
     private final AppUserRepository appUserRepository;
     private final CartItemRepository cartItemRepository;
+    private final OrderRepository orderRepository;
     private final AppUserUtils appUserUtils;
 
     @Transactional
@@ -99,6 +101,33 @@ public class CartItemService {
         user.removeCartTicket(cartTicket);
         cartItemRepository.delete(cartTicket);
 
+        return true;
+    }
+
+    @Transactional
+    public boolean checkout() {
+        AppUser user = appUserUtils.getCurrentlyLoggedUser();
+
+        List<CartTicket> cartTickets = user.getCartTickets();
+        if (cartTickets.isEmpty()) {
+            throw new IllegalStateException("Your cart is empty");
+        }
+
+        // check if all items are still locked by me
+        cartTickets.stream().
+                filter(cartTicket -> (cartTicket.getTicket().getLockExpiresAt().
+                isBefore(LocalDateTime.now()) && !cartTicket.getTicket().
+                getUser().getId().equals(user.getId()))).
+                forEachOrdered(_item -> {
+                    throw new IllegalStateException(
+                            "You are not owner of all tickets or time expired");
+                });
+
+        // proceed
+        
+        
+        
+        // delete my cart items
         return true;
     }
 

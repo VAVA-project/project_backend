@@ -180,6 +180,20 @@ public class AppUser implements UserDetails {
         tickets.remove(ticket);
         ticket.setUser(null);
     }
+    
+    public void addOrder(Order order) {
+        if(order == null) return;
+        
+        orders.add(order);
+        order.setUser(this);
+    }
+    
+    public void removeOrder(Order order) {
+        if(order == null) return;
+        
+        orders.remove(order);
+        order.setUser(null);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
