@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import static sk.stu.fiit.projectBackend.Other.Constants.USER_NOT_FOUND;
 import sk.stu.fiit.projectBackend.User.dto.LoginRequest;
 import sk.stu.fiit.projectBackend.User.dto.LoginResponse;
 import sk.stu.fiit.projectBackend.User.dto.RegisterRequest;
@@ -27,8 +28,6 @@ import sk.stu.fiit.projectBackend.exceptions.IncorrectUsernameOrPasswordExceptio
 @Service
 @AllArgsConstructor
 public class AppUserService implements UserDetailsService {
-
-    private static final String USER_NOT_FOUND = "User with email %s not found";
 
     private final AppUserRepository appUserRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -47,7 +46,7 @@ public class AppUserService implements UserDetailsService {
                 isPresent();
 
         if (userExists) {
-            throw new EmailTakenException("Email already taken");
+            throw new EmailTakenException();
         }
 
         String hashedPassword = bCryptPasswordEncoder.encode(request.getPassword());
@@ -70,13 +69,13 @@ public class AppUserService implements UserDetailsService {
                 request.getEmail());
         
         if(!userOptional.isPresent()) {
-            throw new IncorrectUsernameOrPasswordException("Incorrect username or password");
+            throw new IncorrectUsernameOrPasswordException();
         }
         
         AppUser user = userOptional.get();
         
         if(!bCryptPasswordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new IncorrectUsernameOrPasswordException("Incorrect username or password");
+            throw new IncorrectUsernameOrPasswordException();
             
         }
         
@@ -84,5 +83,5 @@ public class AppUserService implements UserDetailsService {
         
         return new LoginResponse(jwtToken);
     }
-
+    
 }

@@ -5,6 +5,7 @@
  */
 package sk.stu.fiit.projectBackend.User;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,12 +20,10 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -36,8 +35,7 @@ import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
  *
  * @author Adam Bublavý
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Entity
 @Table
@@ -54,68 +52,66 @@ public class AppUser implements UserDetails {
             nullable = false
     )
     private UUID id;
-    
+
     @Column(
             unique = true,
             nullable = false
     )
     private String email;
-    
+
     @Column(
             nullable = false
     )
+    @JsonIgnore
     private String password;
-    
+
     @Column(
             nullable = false
     )
     @Enumerated(EnumType.STRING)
     private AppUserTypes type;
-    
+
     @Column(
             nullable = false
     )
     private String firstName;
-    
+
     @Column(
             nullable = false
     )
     private String lastName;
-    
+
     @Column(
             nullable = false
     )
     private LocalDate dateOfBirth;
-    
+
     private byte[] photo;
-    
+
     @Column(
             nullable = false
     )
     private LocalDateTime createdAt;
-    
+
     @Column(
             nullable = false
     )
     private LocalDateTime updatedAt;
-    
+
     private LocalDateTime deletedAt;
-    
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(
-            name = "creatorId",
-            referencedColumnName = "id",
-            nullable = false,
-            updatable = false
+
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "user"
     )
-    private List<TourOffer> tourOffers;
-    
+    private List<TourOffer> tourOffers = new ArrayList<>(0);
+
     @OneToMany(
             cascade = CascadeType.ALL,
             mappedBy = "user"
     )
     private List<CartTicket> cartTickets = new ArrayList<>(0);
-    
+
     public AppUser(String email, String password, AppUserTypes type,
             String firstName, String lastName, LocalDate dateOfBirth,
             byte[] photo) {
@@ -129,20 +125,47 @@ public class AppUser implements UserDetails {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
-    
+
+    public void addTourOffer(TourOffer tourOffer) {
+        if (tourOffer == null) {
+            return;
+        }
+
+        tourOffers.add(tourOffer);
+        tourOffer.setUser(this);
+    }
+
+    public void removeTourOffer(TourOffer tourOffer) {
+        if (tourOffer == null) {
+            return;
+        }
+
+        tourOffers.remove(tourOffer);
+        tourOffer.setUser(null);
+    }
+
     public void addCartTicket(CartTicket cartTicket) {
+        if (cartTicket == null) {
+            return;
+        }
+
         cartTickets.add(cartTicket);
         cartTicket.setUser(this);
     }
-    
+
     public void removeCartTicket(CartTicket cartTicket) {
+        if (cartTicket == null) {
+            return;
+        }
+
         cartTickets.remove(cartTicket);
         cartTicket.setUser(null);
     }
-    
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(type.name());
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(type.
+                name());
         return Collections.singletonList(authority);
     }
 
@@ -170,7 +193,7 @@ public class AppUser implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-    
+
     @Override
     public String getPassword() {
         return password;

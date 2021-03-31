@@ -27,7 +27,7 @@ public class CartItemController {
     private final CartItemService cartItemService;
 
     @PostMapping(path = "/add/{ticketId}")
-    public ResponseEntity<Object> addTicketToCart(@PathVariable("ticketId") UUID id) {
+    public ResponseEntity<Boolean> addTicketToCart(@PathVariable("ticketId") UUID id) {
         return ResponseEntity.ok(cartItemService.addTicketToCart(id));
     }
     

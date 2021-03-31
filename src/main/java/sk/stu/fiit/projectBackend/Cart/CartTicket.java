@@ -5,6 +5,7 @@
  */
 package sk.stu.fiit.projectBackend.Cart;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.UUID;
 import javax.persistence.CascadeType;
@@ -17,19 +18,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
-import sk.stu.fiit.projectBackend.Ticket.Ticket;
+import sk.stu.fiit.projectBackend.TourDate.Ticket;
 import sk.stu.fiit.projectBackend.User.AppUser;
 
 /**
  *
  * @author Adam Bublavý
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Entity
 @Table
@@ -62,8 +61,13 @@ public class CartTicket implements Serializable {
             referencedColumnName = "id",
             nullable = false
     )
+    @JsonIgnore
     private AppUser user;
     
+    @Column(
+            nullable = false,
+            updatable = false
+    )
     private double price;
 
     public CartTicket(Ticket ticket, AppUser user, double price) {

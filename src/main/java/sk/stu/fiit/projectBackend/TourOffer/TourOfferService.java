@@ -14,14 +14,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import static sk.stu.fiit.projectBackend.Other.Constants.TOUR_OFFER_NOT_FOUND;
 import sk.stu.fiit.projectBackend.TourOffer.dto.CreateTourOfferRequest;
 import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferPage;
 import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferResponse;
 import sk.stu.fiit.projectBackend.TourOffer.dto.UpdateTourOfferRequest;
 import sk.stu.fiit.projectBackend.User.AppUser;
 import sk.stu.fiit.projectBackend.User.AppUserRepository;
+import sk.stu.fiit.projectBackend.Utils.AppUserUtils;
 import sk.stu.fiit.projectBackend.exceptions.RecordNotFoundException;
 
 /**
@@ -32,40 +33,27 @@ import sk.stu.fiit.projectBackend.exceptions.RecordNotFoundException;
 @AllArgsConstructor
 public class TourOfferService {
 
-    private static final String USER_NOT_FOUND = "Fatal error, user not found";
-    private static final String TOUR_OFFER_NOT_FOUND = "Tour offer with id %s not found";
-
     private final TourOfferRepository tourOfferRepository;
     private final AppUserRepository appUserRepository;
+    private final AppUserUtils appUserUtils;
 
-    @Transactional
     public TourOfferResponse createTourOffer(
             CreateTourOfferRequest request) {
+        
+        AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
-        String userEmail = SecurityContextHolder.getContext().
-                getAuthentication().getName();
-
-        AppUser user = appUserRepository.findByEmail(userEmail).orElseThrow(
-                () -> new IllegalStateException(USER_NOT_FOUND)
-        );
-
-        TourOffer newOffer = new TourOffer(request.getStartPlace(), request.
-                getDestinationPlace(), request.getDescription(), request.
-                getPricePerPerson());
-
-        user.getTourOffers().add(newOffer);
+        TourOffer newOffer = new TourOffer(request);
+        
+        user.addTourOffer(newOffer);
 
         TourOffer savedOffer = tourOfferRepository.save(newOffer);
 
-        return new TourOfferResponse(savedOffer, user.getId());
+        return new TourOfferResponse(savedOffer);
     }
 
+    @Transactional
     public boolean deleteTourOffer(UUID id) {
-        String userEmail = SecurityContextHolder.getContext().
-                getAuthentication().getName();
-
-        AppUser user = appUserRepository.findByEmail(userEmail).orElseThrow(
-                () -> new IllegalStateException(USER_NOT_FOUND));
+        AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
         Optional<TourOffer> tourOfferOptional = user.getTourOffers().stream().
                 filter(e -> e.getId().equals(id)).findFirst();
@@ -81,6 +69,9 @@ public class TourOfferService {
         }
 
         tourOffer.setDeletedAt(LocalDateTime.now());
+        tourOffer.getTourDates().forEach(e -> {
+            e.setDeletedAt(LocalDateTime.now());
+        });
 
         tourOfferRepository.save(tourOffer);
 
@@ -89,12 +80,8 @@ public class TourOfferService {
 
     public TourOfferResponse updateTourOffer(UUID id,
             UpdateTourOfferRequest request) {
-        String userEmail = SecurityContextHolder.getContext().
-                getAuthentication().getName();
-
-        AppUser user = appUserRepository.findByEmail(userEmail).orElseThrow(
-                () -> new IllegalStateException(USER_NOT_FOUND));
-
+        AppUser user = appUserUtils.getCurrentlyLoggedUser();
+        
         TourOffer tourOffer = user.getTourOffers().stream().filter(e -> e.
                 getId().equals(id)).findFirst().orElseThrow(
                 () -> new RecordNotFoundException(String.format(
@@ -104,37 +91,41 @@ public class TourOfferService {
             throw new RecordNotFoundException(String.
                     format(TOUR_OFFER_NOT_FOUND, id));
         }
+        
+        boolean updated = false;
 
         if (request.getStartPlace() != null) {
             tourOffer.setStartPlace(request.getStartPlace());
+            updated = true;
         }
         if (request.getDestinationPlace() != null) {
             tourOffer.setDestinationPlace(request.getDestinationPlace());
+            updated = true;
         }
         if (request.getDescription() != null) {
             tourOffer.setDescription(request.getDescription());
+            updated = true;
         }
         if (request.getPricePerPerson() != null) {
             tourOffer.setPricePerPerson(request.getPricePerPerson());
+            updated = true;
         }
+        
+        if(updated) tourOffer.setUpdatedAt(LocalDateTime.now());
 
         TourOffer updatedOffer = tourOfferRepository.save(tourOffer);
 
-        return new TourOfferResponse(updatedOffer, user.getId());
+        return new TourOfferResponse(updatedOffer);
     }
 
     public Page<TourOffer> getUsersTourOffers(TourOfferPage page) {
-        String userEmail = SecurityContextHolder.getContext().
-                getAuthentication().getName();
-
-        AppUser user = appUserRepository.findByEmail(userEmail).orElseThrow(
-                () -> new IllegalStateException(USER_NOT_FOUND));
+        AppUser user = appUserUtils.getCurrentlyLoggedUser();
         
         Sort sort = Sort.by(page.getSortDirection(), page.getSortBy());
         Pageable pageable = PageRequest.of(page.getPageNumber(), page.
                 getPageSize(), sort);
 
-        return appUserRepository.findAllByUserId(user.getId(), pageable);
+        return tourOfferRepository.findAllByUserId(user.getId(), pageable);
     }
 
 }

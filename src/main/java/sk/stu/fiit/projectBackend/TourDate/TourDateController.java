@@ -33,8 +33,8 @@ public class TourDateController {
 
     @PostMapping(path = "/{tourOfferId}/tourDate",
             consumes = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<TourDateResponse> createTourDate(@PathVariable(
-            "tourOfferId") UUID id,
+    public ResponseEntity<TourDateResponse> createTourDate(
+            @PathVariable("tourOfferId") UUID id,
             @Valid @RequestBody CreateTourDateRequest request) {
         return ResponseEntity.ok(tourDateService.createTourDate(id, request));
     }

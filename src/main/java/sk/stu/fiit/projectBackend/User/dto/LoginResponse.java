@@ -17,6 +17,6 @@ import lombok.Getter;
 @Getter
 public class LoginResponse {
     
-    private String jwtToken;
+    private final String jwtToken;
     
 }
