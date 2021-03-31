@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sk.stu.fiit.projectBackend.UserOrder;
+package sk.stu.fiit.projectBackend.Order;
 
 import org.springframework.stereotype.Service;
 
@@ -12,6 +12,6 @@ import org.springframework.stereotype.Service;
  * @author Adam Bublavý
  */
 @Service
-public class UserOrderService {
+public class OrderService {
     
 }

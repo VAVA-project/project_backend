@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sk.stu.fiit.projectBackend.Cart;
+package sk.stu.fiit.projectBackend.Order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
@@ -32,7 +32,7 @@ import sk.stu.fiit.projectBackend.User.AppUser;
 @NoArgsConstructor
 @Entity
 @Table
-public class CartTicket implements Serializable {
+public class OrderTicket implements Serializable {
     
     @Id
     @GeneratedValue(generator = "uuid_cart_ticket")
@@ -46,7 +46,7 @@ public class CartTicket implements Serializable {
     )
     private UUID id;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(
             name = "ticket_id", 
             referencedColumnName = "id",
@@ -69,8 +69,17 @@ public class CartTicket implements Serializable {
             updatable = false
     )
     private double price;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "orderId",
+            referencedColumnName = "id",
+            nullable = false
+    )
+    @JsonIgnore
+    private Order order;
 
-    public CartTicket(Ticket ticket, AppUser user, double price) {
+    public OrderTicket(Ticket ticket, AppUser user, double price) {
         this.ticket = ticket;
         this.user = user;
         this.price = price;

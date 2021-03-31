@@ -29,54 +29,77 @@ import sk.stu.fiit.projectBackend.exceptions.TicketIsPurchased;
 @Service
 @AllArgsConstructor
 public class CartItemService {
-    
-    private static final int TICKET_RESERVE_TIME_IN_MINUTES = 15;
-    
+
+    private static final int TICKET_RESERVE_TIME_IN_MINUTES = 1;
+
     private final TicketRepository ticketRepository;
     private final AppUserRepository appUserRepository;
+    private final CartItemRepository cartItemRepository;
     private final AppUserUtils appUserUtils;
-    
+
     @Transactional
     public boolean addTicketToCart(UUID ticketId) {
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(
                 () -> new RecordNotFoundException(TICKET_NOT_FOUND));
-        
+
         if (ticket.getPurchasedAt() != null) {
             throw new TicketIsPurchased(TICKET_ALREADY_PURCHASED);
         }
-        
-        if (ticket.getUser() != null && LocalDateTime.now().isBefore(ticket.
-                getLockExpiresAt())) {
+
+        if (ticket.getLockExpiresAt() != null && LocalDateTime.now()
+                .isBefore(ticket.getLockExpiresAt())) {
             return false;
         }
-        
+
+        // WARNING 
+        if (ticket.getUser() != null) {
+            ticket.getUser().removeTicket(ticket);
+        }
+
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
-        
+
         ticket.setUpdatedAt(LocalDateTime.now());
-        ticket.setUser(user);
+        user.addTicket(ticket);
         ticket.setLockExpiresAt(LocalDateTime.now().plusMinutes(
                 TICKET_RESERVE_TIME_IN_MINUTES));
-        
+
         ticketRepository.save(ticket);
         appUserRepository.save(user);
-        
-        user.addCartTicket(new CartTicket(ticket, user, ticket.getTourDate().getTourOffer().getPricePerPerson()));
-        
+
+        user.addCartTicket(new CartTicket(ticket, user, ticket.getTourDate().
+                getTourOffer().getPricePerPerson()));
+
         return true;
     }
-    
+
     public CartResponse getCartContent() {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
-        
+
         List<CartTicket> cartContent = user.getCartTickets();
         double totalPrice = 0;
-        
+
         totalPrice = cartContent.stream().
                 map(ticket -> ticket.getPrice()).
                 reduce(totalPrice,
                         (accumulator, _item) -> accumulator + _item);
-        
+
         return new CartResponse(cartContent, totalPrice);
     }
-    
+
+    @Transactional
+    public boolean removeTicketFromCart(UUID ticketId) {
+        AppUser user = appUserUtils.getCurrentlyLoggedUser();
+
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(
+                () -> new RecordNotFoundException(TICKET_NOT_FOUND));
+
+        CartTicket cartTicket = ticket.getCartTicket();
+
+        user.removeTicket(ticket);
+        user.removeCartTicket(cartTicket);
+        cartItemRepository.delete(cartTicket);
+
+        return true;
+    }
+
 }
