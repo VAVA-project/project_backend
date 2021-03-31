@@ -21,9 +21,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -35,8 +34,7 @@ import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
  *
  * @author Adam Bublavý
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Entity
 @Table

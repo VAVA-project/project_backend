@@ -30,9 +30,9 @@ public class TourOfferResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
-    public TourOfferResponse(TourOffer offer, UUID creatorId) {
+    public TourOfferResponse(TourOffer offer) {
         this.id = offer.getId();
-        this.creatorId = creatorId;
+        this.creatorId = offer.getUser().getId();
         this.startPlace = offer.getStartPlace();
         this.destinationPlace = offer.getDestinationPlace();
         this.description = offer.getDescription();

@@ -24,18 +24,21 @@ import sk.stu.fiit.projectBackend.User.dto.RegisterResponse;
  */
 @RestController
 @AllArgsConstructor
-@RequestMapping(path = "api/v1")
+@RequestMapping(
+        path = "api/v1",
+        consumes = MediaType.APPLICATION_XML_VALUE
+)
 public class AppUserController {
 
     private final AppUserService appUserService;
 
-    @PostMapping(path = "/register", consumes = MediaType.APPLICATION_XML_VALUE)
+    @PostMapping(path = "/register")
     public ResponseEntity<RegisterResponse> register(
             @Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(appUserService.register(request));
     }
 
-    @PostMapping(path = "/login", consumes = MediaType.APPLICATION_XML_VALUE)
+    @PostMapping(path = "/login")
     public ResponseEntity<LoginResponse> login(
             @Valid @RequestBody LoginRequest request) {
         

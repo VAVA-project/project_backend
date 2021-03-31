@@ -5,11 +5,17 @@
  */
 package sk.stu.fiit.projectBackend.exceptions;
 
+import static sk.stu.fiit.projectBackend.Other.Constants.INCORRECT_USERNAME_OR_PASSWORD;
+
 /**
  *
  * @author Adam Bublavý
  */
 public class IncorrectUsernameOrPasswordException extends RuntimeException {
+
+    public IncorrectUsernameOrPasswordException() {
+        super(INCORRECT_USERNAME_OR_PASSWORD);
+    }
 
     public IncorrectUsernameOrPasswordException(String message) {
         super(message);

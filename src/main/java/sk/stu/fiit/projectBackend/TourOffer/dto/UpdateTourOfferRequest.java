@@ -7,9 +7,7 @@ package sk.stu.fiit.projectBackend.TourOffer.dto;
 
 import javax.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 import sk.stu.fiit.projectBackend.validators.NullOrNotBlank;
 
 /**
@@ -17,9 +15,7 @@ import sk.stu.fiit.projectBackend.validators.NullOrNotBlank;
  * @author Adam Bublavý
  */
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
+@Data
 public class UpdateTourOfferRequest {
     
     @NullOrNotBlank

@@ -5,11 +5,17 @@
  */
 package sk.stu.fiit.projectBackend.exceptions;
 
+import static sk.stu.fiit.projectBackend.Other.Constants.EMAIL_ALREADY_TAKEN;
+
 /**
  *
  * @author Adam Bublavý
  */
 public class EmailTakenException extends RuntimeException {
+
+    public EmailTakenException() {
+        super(EMAIL_ALREADY_TAKEN);
+    }
 
     public EmailTakenException(String msg) {
         super(msg);
