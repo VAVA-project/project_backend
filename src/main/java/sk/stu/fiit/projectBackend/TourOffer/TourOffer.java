@@ -68,6 +68,7 @@ public class TourOffer implements Serializable {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    @JsonIgnore
     private LocalDateTime deletedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)

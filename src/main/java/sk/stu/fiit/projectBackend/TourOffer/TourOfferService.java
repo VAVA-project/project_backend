@@ -125,7 +125,7 @@ public class TourOfferService {
         Pageable pageable = PageRequest.of(page.getPageNumber(), page.
                 getPageSize(), sort);
 
-        return appUserRepository.findAllByUserId(user.getId(), pageable);
+        return tourOfferRepository.findAllByUserId(user.getId(), pageable);
     }
 
 }

@@ -5,6 +5,7 @@
  */
 package sk.stu.fiit.projectBackend.Ticket;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -17,9 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import sk.stu.fiit.projectBackend.Cart.CartTicket;
 import sk.stu.fiit.projectBackend.TourDate.TourDate;
@@ -29,11 +28,9 @@ import sk.stu.fiit.projectBackend.User.AppUser;
  *
  * @author Adam Bublavý
  */
-@Getter
-@Setter
+@Data
 @Entity
 @Table
-@ToString
 public class Ticket implements Serializable {
     
     @Id
@@ -60,6 +57,7 @@ public class Ticket implements Serializable {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
+    @JsonIgnore
     private AppUser user;
     
     @ManyToOne(fetch = FetchType.LAZY)
@@ -68,6 +66,7 @@ public class Ticket implements Serializable {
             nullable = false,
             updatable = false
     )
+    @JsonIgnore
     private TourDate tourDate;
     
     @OneToOne(mappedBy = "ticket")
