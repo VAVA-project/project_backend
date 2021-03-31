@@ -7,14 +7,17 @@ package sk.stu.fiit.projectBackend.TourOffer;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
@@ -23,6 +26,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import sk.stu.fiit.projectBackend.TourDate.TourDate;
+import sk.stu.fiit.projectBackend.User.AppUser;
 
 /**
  *
@@ -68,15 +72,21 @@ public class TourOffer implements Serializable {
     
     private LocalDateTime deletedAt;
     
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-            name = "tourOfferId",
+            name = "creatorId",
             referencedColumnName = "id",
             nullable = false,
             updatable = false
     )
-    private List<TourDate> tourDates;
-
+    private AppUser user;
+    
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "tourOffer"
+    )
+    private List<TourDate> tourDates = new ArrayList<>(0);
+    
     public TourOffer(String startPlace, String destinationPlace,
             String description, double pricePerPerson) {
         this.startPlace = startPlace;
@@ -85,6 +95,24 @@ public class TourOffer implements Serializable {
         this.pricePerPerson = pricePerPerson;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+    }
+    
+    public void addTourDate(TourDate tourDate) {
+        if (tourDate == null) {
+            return;
+        }
+        
+        this.tourDates.add(tourDate);
+        tourDate.setTourOffer(this);
+    }
+    
+    public void removeTourDate(TourDate tourDate) {
+        if (tourDate == null) {
+            return;
+        }
+        
+        this.tourDates.remove(tourDate);
+        tourDate.setTourOffer(null);
     }
     
 }

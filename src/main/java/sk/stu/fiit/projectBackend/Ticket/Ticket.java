@@ -63,7 +63,11 @@ public class Ticket implements Serializable {
     private AppUser user;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tourDateId")
+    @JoinColumn(
+            name = "tourDateId",
+            nullable = false,
+            updatable = false
+    )
     private TourDate tourDate;
     
     @OneToOne(mappedBy = "ticket")

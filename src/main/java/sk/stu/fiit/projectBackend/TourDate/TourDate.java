@@ -13,8 +13,11 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
@@ -23,6 +26,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 import sk.stu.fiit.projectBackend.Ticket.Ticket;
+import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 
 /**
  *
@@ -35,7 +39,7 @@ import sk.stu.fiit.projectBackend.Ticket.Ticket;
 @Table
 @ToString
 public class TourDate implements Serializable {
-    
+
     @Id
     @GeneratedValue(generator = "uuid_tour_date")
     @GenericGenerator(
@@ -47,21 +51,30 @@ public class TourDate implements Serializable {
             nullable = false
     )
     private UUID id;
-    
+
     @Column(nullable = false)
     private LocalDateTime startDate;
-    
+
     @Column(nullable = false)
     private LocalDateTime endDate;
-    
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
-    
+
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-    
+
     private LocalDateTime deletedAt;
-    
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "tourOfferId",
+            referencedColumnName = "id",
+            nullable = false,
+            updatable = false
+    )
+    private TourOffer tourOffer;
+
     @OneToMany(
             cascade = CascadeType.ALL,
             mappedBy = "tourDate"
@@ -74,15 +87,23 @@ public class TourDate implements Serializable {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
-    
+
     public void addTicket(Ticket ticket) {
+        if (ticket == null) {
+            return;
+        }
+
         this.tickets.add(ticket);
         ticket.setTourDate(this);
     }
-    
+
     public void removeTicket(Ticket ticket) {
+        if (ticket == null) {
+            return;
+        }
+
         this.tickets.remove(ticket);
         ticket.setTourDate(null);
     }
-    
+
 }
