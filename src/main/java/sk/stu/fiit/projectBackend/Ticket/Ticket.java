@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -20,8 +21,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
+import sk.stu.fiit.projectBackend.Cart.CartTicket;
+import sk.stu.fiit.projectBackend.TourDate.TourDate;
 import sk.stu.fiit.projectBackend.User.AppUser;
-import sk.stu.fiit.projectBackend.UserOrder.OrderTicket;
 
 /**
  *
@@ -56,13 +58,16 @@ public class Ticket implements Serializable {
     
     private LocalDateTime deletedAt;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private AppUser user;
     
-    @OneToOne(mappedBy = "ticket")
-    private OrderTicket orderedTicket;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tourDateId")
+    private TourDate tourDate;
     
+    @OneToOne(mappedBy = "ticket")
+    private CartTicket cartTicket;
 
     public Ticket() {
         this.createdAt = LocalDateTime.now();

@@ -5,19 +5,13 @@
  */
 package sk.stu.fiit.projectBackend.UserOrder;
 
-import java.io.Serializable;
-import java.util.UUID;
-import lombok.Data;
-import sk.stu.fiit.projectBackend.Ticket.Ticket;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Adam Bublavý
  */
-@Data
-public class OrderTicketKey implements Serializable {
-    
-    private Ticket ticket;
-    private UUID orderId;
+@Service
+public class UserOrderService {
     
 }

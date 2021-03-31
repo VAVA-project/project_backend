@@ -15,7 +15,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
@@ -63,12 +62,9 @@ public class TourDate implements Serializable {
     
     private LocalDateTime deletedAt;
     
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(
-            name = "tourDateId",
-            referencedColumnName = "id",
-            nullable = false,
-            updatable = false
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "tourDate"
     )
     private List<Ticket> tickets = new ArrayList<>(0);
 
@@ -77,6 +73,16 @@ public class TourDate implements Serializable {
         this.endDate = endDate;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+    }
+    
+    public void addTicket(Ticket ticket) {
+        this.tickets.add(ticket);
+        ticket.setTourDate(this);
+    }
+    
+    public void removeTicket(Ticket ticket) {
+        this.tickets.remove(ticket);
+        ticket.setTourDate(null);
     }
     
 }

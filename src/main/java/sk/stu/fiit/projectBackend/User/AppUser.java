@@ -29,9 +29,8 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import sk.stu.fiit.projectBackend.Ticket.Ticket;
+import sk.stu.fiit.projectBackend.Cart.CartTicket;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
-import sk.stu.fiit.projectBackend.UserOrder.UserOrder;
 
 /**
  *
@@ -111,17 +110,11 @@ public class AppUser implements UserDetails {
     )
     private List<TourOffer> tourOffers;
     
-    @OneToMany(mappedBy = "user")
-    private List<Ticket> tickets;
-    
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(
-            name = "userId",
-            referencedColumnName = "id",
-            nullable = false,
-            updatable = false
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "user"
     )
-    private List<UserOrder> orders = new ArrayList<>(0);
+    private List<CartTicket> cartTickets = new ArrayList<>(0);
     
     public AppUser(String email, String password, AppUserTypes type,
             String firstName, String lastName, LocalDate dateOfBirth,
@@ -136,6 +129,17 @@ public class AppUser implements UserDetails {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
+    
+    public void addCartTicket(CartTicket cartTicket) {
+        cartTickets.add(cartTicket);
+        cartTicket.setUser(this);
+    }
+    
+    public void removeCartTicket(CartTicket cartTicket) {
+        cartTickets.remove(cartTicket);
+        cartTicket.setUser(null);
+    }
+    
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(type.name());
