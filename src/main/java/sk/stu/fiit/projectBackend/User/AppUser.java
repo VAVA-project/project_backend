@@ -111,11 +111,7 @@ public class AppUser implements UserDetails {
     )
     private List<TourOffer> tourOffers;
     
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(
-            name = "lockerId",
-            referencedColumnName = "id"
-    )
+    @OneToMany(mappedBy = "user")
     private List<Ticket> tickets;
     
     @OneToMany(cascade = CascadeType.ALL)
