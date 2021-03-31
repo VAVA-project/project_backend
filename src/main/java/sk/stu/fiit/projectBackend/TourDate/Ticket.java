@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sk.stu.fiit.projectBackend.Ticket;
+package sk.stu.fiit.projectBackend.TourDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
@@ -21,7 +21,6 @@ import javax.persistence.Table;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import sk.stu.fiit.projectBackend.Cart.CartTicket;
-import sk.stu.fiit.projectBackend.TourDate.TourDate;
 import sk.stu.fiit.projectBackend.User.AppUser;
 
 /**
@@ -53,7 +52,7 @@ public class Ticket implements Serializable {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
     
-    private LocalDateTime deletedAt;
+    private LocalDateTime lockExpiresAt;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
@@ -70,6 +69,7 @@ public class Ticket implements Serializable {
     private TourDate tourDate;
     
     @OneToOne(mappedBy = "ticket")
+    @JsonIgnore
     private CartTicket cartTicket;
 
     public Ticket() {

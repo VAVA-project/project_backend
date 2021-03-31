@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sk.stu.fiit.projectBackend.Ticket;
+package sk.stu.fiit.projectBackend.TourDate;
 
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;

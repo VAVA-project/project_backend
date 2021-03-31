@@ -5,6 +5,7 @@
  */
 package sk.stu.fiit.projectBackend.User;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -61,6 +62,7 @@ public class AppUser implements UserDetails {
     @Column(
             nullable = false
     )
+    @JsonIgnore
     private String password;
 
     @Column(

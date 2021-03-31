@@ -13,13 +13,11 @@ import org.springframework.stereotype.Service;
 import static sk.stu.fiit.projectBackend.Other.Constants.TOUR_DATE_INVALID_DATES;
 import static sk.stu.fiit.projectBackend.Other.Constants.TOUR_DATE_NOT_FOUND;
 import static sk.stu.fiit.projectBackend.Other.Constants.TOUR_OFFER_NOT_FOUND;
-import sk.stu.fiit.projectBackend.Ticket.Ticket;
 import sk.stu.fiit.projectBackend.TourDate.dto.CreateTourDateRequest;
 import sk.stu.fiit.projectBackend.TourDate.dto.TourDateResponse;
 import sk.stu.fiit.projectBackend.TourDate.dto.UpdateTourDateRequest;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 import sk.stu.fiit.projectBackend.User.AppUser;
-import sk.stu.fiit.projectBackend.User.AppUserRepository;
 import sk.stu.fiit.projectBackend.Utils.AppUserUtils;
 import sk.stu.fiit.projectBackend.exceptions.InvalidRangeException;
 import sk.stu.fiit.projectBackend.exceptions.RecordNotFoundException;
@@ -33,7 +31,6 @@ import sk.stu.fiit.projectBackend.exceptions.RecordNotFoundException;
 public class TourDateService {
     
     private final TourDateRepository tourDateRepository;
-    private final AppUserRepository appUserRepository;
     private final AppUserUtils appUserUtils;
     
     @Transactional
