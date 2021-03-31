@@ -7,6 +7,7 @@ package sk.stu.fiit.projectBackend.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +29,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import sk.stu.fiit.projectBackend.Cart.CartTicket;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 
 /**
@@ -107,7 +109,13 @@ public class AppUser implements UserDetails {
             updatable = false
     )
     private List<TourOffer> tourOffers;
-
+    
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "user"
+    )
+    private List<CartTicket> cartTickets = new ArrayList<>(0);
+    
     public AppUser(String email, String password, AppUserTypes type,
             String firstName, String lastName, LocalDate dateOfBirth,
             byte[] photo) {
@@ -121,6 +129,17 @@ public class AppUser implements UserDetails {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
+    
+    public void addCartTicket(CartTicket cartTicket) {
+        cartTickets.add(cartTicket);
+        cartTicket.setUser(this);
+    }
+    
+    public void removeCartTicket(CartTicket cartTicket) {
+        cartTickets.remove(cartTicket);
+        cartTicket.setUser(null);
+    }
+    
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(type.name());

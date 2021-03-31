@@ -3,26 +3,27 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sk.stu.fiit.projectBackend.TourOffer;
+package sk.stu.fiit.projectBackend.Ticket;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
+import sk.stu.fiit.projectBackend.Cart.CartTicket;
 import sk.stu.fiit.projectBackend.TourDate.TourDate;
+import sk.stu.fiit.projectBackend.User.AppUser;
 
 /**
  *
@@ -30,16 +31,15 @@ import sk.stu.fiit.projectBackend.TourDate.TourDate;
  */
 @Getter
 @Setter
-@NoArgsConstructor
 @Entity
 @Table
 @ToString
-public class TourOffer implements Serializable {
+public class Ticket implements Serializable {
     
     @Id
-    @GeneratedValue(generator = "uuid_tour_offer")
+    @GeneratedValue(generator = "uuid_ticket")
     @GenericGenerator(
-            name = "uuid_tour_offer",
+            name = "uuid_ticket",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(
@@ -48,17 +48,7 @@ public class TourOffer implements Serializable {
     )
     private UUID id;
     
-    @Column(nullable = false)
-    private String startPlace;
-    
-    @Column(nullable = false)
-    private String destinationPlace;
-    
-    @Column(nullable = false)
-    private String description;
-    
-    @Column(nullable = false)
-    private double pricePerPerson;
+    private LocalDateTime purchasedAt;
     
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -68,23 +58,19 @@ public class TourOffer implements Serializable {
     
     private LocalDateTime deletedAt;
     
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(
-            name = "tourOfferId",
-            referencedColumnName = "id",
-            nullable = false,
-            updatable = false
-    )
-    private List<TourDate> tourDates;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
+    private AppUser user;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tourDateId")
+    private TourDate tourDate;
+    
+    @OneToOne(mappedBy = "ticket")
+    private CartTicket cartTicket;
 
-    public TourOffer(String startPlace, String destinationPlace,
-            String description, double pricePerPerson) {
-        this.startPlace = startPlace;
-        this.destinationPlace = destinationPlace;
-        this.description = description;
-        this.pricePerPerson = pricePerPerson;
+    public Ticket() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
-    
 }

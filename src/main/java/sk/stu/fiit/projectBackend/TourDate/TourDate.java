@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sk.stu.fiit.projectBackend.TourOffer;
+package sk.stu.fiit.projectBackend.TourDate;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.persistence.CascadeType;
@@ -14,7 +15,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
-import sk.stu.fiit.projectBackend.TourDate.TourDate;
+import sk.stu.fiit.projectBackend.Ticket.Ticket;
 
 /**
  *
@@ -34,12 +34,12 @@ import sk.stu.fiit.projectBackend.TourDate.TourDate;
 @Entity
 @Table
 @ToString
-public class TourOffer implements Serializable {
+public class TourDate implements Serializable {
     
     @Id
-    @GeneratedValue(generator = "uuid_tour_offer")
+    @GeneratedValue(generator = "uuid_tour_date")
     @GenericGenerator(
-            name = "uuid_tour_offer",
+            name = "uuid_tour_date",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(
@@ -49,16 +49,10 @@ public class TourOffer implements Serializable {
     private UUID id;
     
     @Column(nullable = false)
-    private String startPlace;
+    private LocalDateTime startDate;
     
     @Column(nullable = false)
-    private String destinationPlace;
-    
-    @Column(nullable = false)
-    private String description;
-    
-    @Column(nullable = false)
-    private double pricePerPerson;
+    private LocalDateTime endDate;
     
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -68,23 +62,27 @@ public class TourOffer implements Serializable {
     
     private LocalDateTime deletedAt;
     
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(
-            name = "tourOfferId",
-            referencedColumnName = "id",
-            nullable = false,
-            updatable = false
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "tourDate"
     )
-    private List<TourDate> tourDates;
+    private List<Ticket> tickets = new ArrayList<>(0);
 
-    public TourOffer(String startPlace, String destinationPlace,
-            String description, double pricePerPerson) {
-        this.startPlace = startPlace;
-        this.destinationPlace = destinationPlace;
-        this.description = description;
-        this.pricePerPerson = pricePerPerson;
+    public TourDate(LocalDateTime startDate, LocalDateTime endDate) {
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+    }
+    
+    public void addTicket(Ticket ticket) {
+        this.tickets.add(ticket);
+        ticket.setTourDate(this);
+    }
+    
+    public void removeTicket(Ticket ticket) {
+        this.tickets.remove(ticket);
+        ticket.setTourDate(null);
     }
     
 }
