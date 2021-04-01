@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sk.stu.fiit.projectBackend.Cart;
+package sk.stu.fiit.projectBackend.Order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
@@ -22,7 +22,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import sk.stu.fiit.projectBackend.TourDate.Ticket;
-import sk.stu.fiit.projectBackend.User.AppUser;
 
 /**
  *
@@ -32,12 +31,12 @@ import sk.stu.fiit.projectBackend.User.AppUser;
 @NoArgsConstructor
 @Entity
 @Table
-public class CartTicket implements Serializable {
+public class OrderTicket implements Serializable {
     
     @Id
-    @GeneratedValue(generator = "uuid_cart_ticket")
+    @GeneratedValue(generator = "uuid_order_ticket")
     @GenericGenerator(
-            name = "uuid_cart_ticket",
+            name = "uuid_order_ticket",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(
@@ -46,34 +45,34 @@ public class CartTicket implements Serializable {
     )
     private UUID id;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(
-            name = "ticket_id", 
+            name = "ticketId", 
             referencedColumnName = "id",
             nullable = false,
             updatable = false
     )
     private Ticket ticket;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-            name = "userId",
-            referencedColumnName = "id",
-            nullable = false
-    )
-    @JsonIgnore
-    private AppUser user;
-    
     @Column(
             nullable = false,
             updatable = false
     )
     private double price;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "orderId",
+            referencedColumnName = "id",
+            nullable = false,
+            updatable = false
+    )
+    @JsonIgnore
+    private UserOrder order;
 
-    public CartTicket(Ticket ticket, AppUser user, double price) {
+    public OrderTicket(Ticket ticket, double price) {
         this.ticket = ticket;
-        this.user = user;
         this.price = price;
     }
-    
+
 }

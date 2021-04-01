@@ -24,7 +24,10 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({EmailTakenException.class, RecordNotFoundException.class})
+    @ExceptionHandler({EmailTakenException.class, RecordNotFoundException.class,
+        IncorrectUsernameOrPasswordException.class, InvalidRangeException.class,
+        PermissionDeniedException.class, TicketIsPurchased.class,
+        CartIsEmptyException.class, TicketPurchaseTimeExpiredException.class})
     protected ResponseEntity<Object> handleExceptions(RuntimeException e) {
         ApiException exception = new ApiException(HttpStatus.BAD_REQUEST, e);
         System.out.println(e);
@@ -35,18 +38,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers,
             HttpStatus status, WebRequest request) {
-        
+
         Map<String, String> errors = new HashMap<>();
-        
+
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        
+
         return ResponseEntity.status(422).body(errors);
     }
-    
-    
 
 }

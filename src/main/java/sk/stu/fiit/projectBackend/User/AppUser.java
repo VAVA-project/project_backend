@@ -29,6 +29,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import sk.stu.fiit.projectBackend.Cart.CartTicket;
+import sk.stu.fiit.projectBackend.Order.UserOrder;
+import sk.stu.fiit.projectBackend.TourDate.Ticket;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 
 /**
@@ -59,43 +61,29 @@ public class AppUser implements UserDetails {
     )
     private String email;
 
-    @Column(
-            nullable = false
-    )
+    @Column(nullable = false)
     @JsonIgnore
     private String password;
 
-    @Column(
-            nullable = false
-    )
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private AppUserTypes type;
 
-    @Column(
-            nullable = false
-    )
+    @Column(nullable = false)
     private String firstName;
 
-    @Column(
-            nullable = false
-    )
+    @Column(nullable = false)
     private String lastName;
 
-    @Column(
-            nullable = false
-    )
+    @Column(nullable = false)
     private LocalDate dateOfBirth;
 
     private byte[] photo;
 
-    @Column(
-            nullable = false
-    )
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(
-            nullable = false
-    )
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
 
     private LocalDateTime deletedAt;
@@ -108,9 +96,22 @@ public class AppUser implements UserDetails {
 
     @OneToMany(
             cascade = CascadeType.ALL,
-            mappedBy = "user"
+            mappedBy = "user",
+            orphanRemoval = true
     )
     private List<CartTicket> cartTickets = new ArrayList<>(0);
+
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "user"
+    )
+    private List<UserOrder> orders = new ArrayList<>(0);
+
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "user"
+    )
+    private List<Ticket> tickets = new ArrayList<>(0);
 
     public AppUser(String email, String password, AppUserTypes type,
             String firstName, String lastName, LocalDate dateOfBirth,
@@ -160,6 +161,39 @@ public class AppUser implements UserDetails {
 
         cartTickets.remove(cartTicket);
         cartTicket.setUser(null);
+    }
+
+    public void addTicket(Ticket ticket) {
+        if (ticket == null) {
+            return;
+        }
+
+        tickets.add(ticket);
+        ticket.setUser(this);
+    }
+
+    public void removeTicket(Ticket ticket) {
+        if (ticket == null) {
+            return;
+        }
+
+        ticket.setLockExpiresAt(null);
+        tickets.remove(ticket);
+        ticket.setUser(null);
+    }
+    
+    public void addOrder(UserOrder order) {
+        if(order == null) return;
+        
+        orders.add(order);
+        order.setUser(this);
+    }
+    
+    public void removeOrder(UserOrder order) {
+        if(order == null) return;
+        
+        orders.remove(order);
+        order.setUser(null);
     }
 
     @Override

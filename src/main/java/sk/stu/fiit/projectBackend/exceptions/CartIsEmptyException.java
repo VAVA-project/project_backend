@@ -3,15 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sk.stu.fiit.projectBackend.UserOrder;
-
-import org.springframework.stereotype.Service;
+package sk.stu.fiit.projectBackend.exceptions;
 
 /**
  *
  * @author Adam Bublavý
  */
-@Service
-public class UserOrderService {
+public class CartIsEmptyException extends RuntimeException {
+
+    public CartIsEmptyException(String message) {
+        super(message);
+    }
     
 }
