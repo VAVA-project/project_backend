@@ -19,5 +19,7 @@ public class Constants {
     public static final String TOUR_DATE_INVALID_DATES = "End date can not be before start date";
     public static final String TICKET_ALREADY_PURCHASED = "Ticket is already purchased";
     public static final String TICKET_NOT_FOUND = "Ticket not found";
+    public static final String CART_IS_EMPTY = "Your cart is empty";
+    public static final String CART_TICKETS_EXPIRED = "You are not owner of all selected tickets or time has expired";
 
 }

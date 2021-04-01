@@ -34,9 +34,9 @@ import sk.stu.fiit.projectBackend.TourDate.Ticket;
 public class OrderTicket implements Serializable {
     
     @Id
-    @GeneratedValue(generator = "uuid_cart_ticket")
+    @GeneratedValue(generator = "uuid_order_ticket")
     @GenericGenerator(
-            name = "uuid_cart_ticket",
+            name = "uuid_order_ticket",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(
@@ -47,7 +47,7 @@ public class OrderTicket implements Serializable {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(
-            name = "ticket_id", 
+            name = "ticketId", 
             referencedColumnName = "id",
             nullable = false,
             updatable = false
@@ -64,14 +64,15 @@ public class OrderTicket implements Serializable {
     @JoinColumn(
             name = "orderId",
             referencedColumnName = "id",
-            nullable = false
+            nullable = false,
+            updatable = false
     )
     @JsonIgnore
-    private Order order;
+    private UserOrder order;
 
     public OrderTicket(Ticket ticket, double price) {
         this.ticket = ticket;
         this.price = price;
     }
-    
+
 }

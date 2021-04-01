@@ -6,6 +6,7 @@
 package sk.stu.fiit.projectBackend.Order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ import sk.stu.fiit.projectBackend.User.AppUser;
 @NoArgsConstructor
 @Entity
 @Table
-public class Order {
+public class UserOrder implements Serializable {
     
     @Id
     @GeneratedValue(generator = "uuid_order")
@@ -82,9 +83,8 @@ public class Order {
     )
     private List<OrderTicket> orderTickets = new ArrayList<>(0);
     
-    public Order(AppUser user, LocalDateTime orderTime, double totalPrice,
+    public UserOrder(LocalDateTime orderTime, double totalPrice,
             String comments) {
-        this.user = user;
         this.orderTime = orderTime;
         this.totalPrice = totalPrice;
         this.comments = comments;

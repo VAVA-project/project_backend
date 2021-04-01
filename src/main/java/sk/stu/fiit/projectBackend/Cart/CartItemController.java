@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sk.stu.fiit.projectBackend.Cart.dto.CartResponse;
+import sk.stu.fiit.projectBackend.Order.UserOrder;
 
 /**
  *
@@ -45,7 +46,7 @@ public class CartItemController {
     }
     
     @PostMapping(path = "/checkout")
-    public ResponseEntity<Object> checkout() {
+    public ResponseEntity<UserOrder> checkout() {
         return ResponseEntity.ok(cartItemService.checkout());
     }
     

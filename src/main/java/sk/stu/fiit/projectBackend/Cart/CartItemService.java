@@ -13,6 +13,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import sk.stu.fiit.projectBackend.Cart.dto.CartResponse;
 import sk.stu.fiit.projectBackend.Order.OrderRepository;
+import sk.stu.fiit.projectBackend.Order.OrderTicket;
+import sk.stu.fiit.projectBackend.Order.UserOrder;
+import static sk.stu.fiit.projectBackend.Other.Constants.CART_IS_EMPTY;
+import static sk.stu.fiit.projectBackend.Other.Constants.CART_TICKETS_EXPIRED;
 import static sk.stu.fiit.projectBackend.Other.Constants.TICKET_ALREADY_PURCHASED;
 import static sk.stu.fiit.projectBackend.Other.Constants.TICKET_NOT_FOUND;
 import sk.stu.fiit.projectBackend.TourDate.Ticket;
@@ -20,8 +24,10 @@ import sk.stu.fiit.projectBackend.TourDate.TicketRepository;
 import sk.stu.fiit.projectBackend.User.AppUser;
 import sk.stu.fiit.projectBackend.User.AppUserRepository;
 import sk.stu.fiit.projectBackend.Utils.AppUserUtils;
+import sk.stu.fiit.projectBackend.exceptions.CartIsEmptyException;
 import sk.stu.fiit.projectBackend.exceptions.RecordNotFoundException;
 import sk.stu.fiit.projectBackend.exceptions.TicketIsPurchased;
+import sk.stu.fiit.projectBackend.exceptions.TicketPurchaseTimeExpiredException;
 
 /**
  *
@@ -31,11 +37,11 @@ import sk.stu.fiit.projectBackend.exceptions.TicketIsPurchased;
 @AllArgsConstructor
 public class CartItemService {
 
-    private static final int TICKET_RESERVE_TIME_IN_MINUTES = 1;
+    private static final int TICKET_RESERVE_TIME_IN_MINUTES = 15;
 
     private final TicketRepository ticketRepository;
     private final AppUserRepository appUserRepository;
-    private final CartItemRepository cartItemRepository;
+    private final CartItemRepository cartTicketRepository;
     private final OrderRepository orderRepository;
     private final AppUserUtils appUserUtils;
 
@@ -78,12 +84,7 @@ public class CartItemService {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
         List<CartTicket> cartContent = user.getCartTickets();
-        double totalPrice = 0;
-
-        totalPrice = cartContent.stream().
-                map(ticket -> ticket.getPrice()).
-                reduce(totalPrice,
-                        (accumulator, _item) -> accumulator + _item);
+        double totalPrice = this.calculateTotalPriceForTickets(cartContent);
 
         return new CartResponse(cartContent, totalPrice);
     }
@@ -99,36 +100,61 @@ public class CartItemService {
 
         user.removeTicket(ticket);
         user.removeCartTicket(cartTicket);
-        cartItemRepository.delete(cartTicket);
+        cartTicketRepository.delete(cartTicket);
 
         return true;
     }
 
     @Transactional
-    public boolean checkout() {
+    public UserOrder checkout() {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
         List<CartTicket> cartTickets = user.getCartTickets();
         if (cartTickets.isEmpty()) {
-            throw new IllegalStateException("Your cart is empty");
+            throw new CartIsEmptyException(CART_IS_EMPTY);
         }
 
-        // check if all items are still locked by me
+        // check if all tickets are still locked by me
         cartTickets.stream().
                 filter(cartTicket -> (cartTicket.getTicket().getLockExpiresAt().
                 isBefore(LocalDateTime.now()) && !cartTicket.getTicket().
                 getUser().getId().equals(user.getId()))).
                 forEachOrdered(_item -> {
-                    throw new IllegalStateException(
-                            "You are not owner of all tickets or time expired");
+                    throw new TicketPurchaseTimeExpiredException(
+                            CART_TICKETS_EXPIRED);
                 });
 
-        // proceed
-        
-        
-        
-        // delete my cart items
-        return true;
+        double totalPrice = calculateTotalPriceForTickets(cartTickets);
+
+        // create new order
+        UserOrder order = new UserOrder(LocalDateTime.now(),
+                totalPrice, null);
+        user.addOrder(order);
+
+        cartTickets.forEach(cartTicket -> {
+            cartTicket.getTicket().setPurchasedAt(LocalDateTime.now());
+            cartTicket.getTicket().setUpdatedAt(LocalDateTime.now());
+            order.addOrderTicket(new OrderTicket(cartTicket.getTicket(),
+                    cartTicket.getPrice()));
+        });
+
+        cartTickets.clear();
+
+        orderRepository.save(order);
+        appUserRepository.save(user);
+
+        return order;
+    }
+
+    private double calculateTotalPriceForTickets(List<CartTicket> cartTickets) {
+        double totalPrice = 0;
+
+        totalPrice = cartTickets.stream().
+                map(ticket -> ticket.getPrice()).
+                reduce(totalPrice,
+                        (accumulator, _item) -> accumulator + _item);
+
+        return totalPrice;
     }
 
 }

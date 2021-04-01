@@ -29,7 +29,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import sk.stu.fiit.projectBackend.Cart.CartTicket;
-import sk.stu.fiit.projectBackend.Order.Order;
+import sk.stu.fiit.projectBackend.Order.UserOrder;
 import sk.stu.fiit.projectBackend.TourDate.Ticket;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 
@@ -96,7 +96,8 @@ public class AppUser implements UserDetails {
 
     @OneToMany(
             cascade = CascadeType.ALL,
-            mappedBy = "user"
+            mappedBy = "user",
+            orphanRemoval = true
     )
     private List<CartTicket> cartTickets = new ArrayList<>(0);
 
@@ -104,7 +105,7 @@ public class AppUser implements UserDetails {
             cascade = CascadeType.ALL,
             mappedBy = "user"
     )
-    private List<Order> orders = new ArrayList<>(0);
+    private List<UserOrder> orders = new ArrayList<>(0);
 
     @OneToMany(
             cascade = CascadeType.ALL,
@@ -181,14 +182,14 @@ public class AppUser implements UserDetails {
         ticket.setUser(null);
     }
     
-    public void addOrder(Order order) {
+    public void addOrder(UserOrder order) {
         if(order == null) return;
         
         orders.add(order);
         order.setUser(this);
     }
     
-    public void removeOrder(Order order) {
+    public void removeOrder(UserOrder order) {
         if(order == null) return;
         
         orders.remove(order);
