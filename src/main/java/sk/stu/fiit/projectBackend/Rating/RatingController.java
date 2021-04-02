@@ -32,11 +32,10 @@ public class RatingController {
 
     @PostMapping(path = "/{tourOfferId}",
             consumes = MediaType.APPLICATION_XML_VALUE)
-    public ResponseEntity<Object> addRate(
+    public ResponseEntity<Object> addRating(
             @PathVariable(name = "tourOfferId") UUID tourOfferId,
             @Valid @RequestBody RatingRequest request) {
-        System.out.println("Asd");
-        HttpStatus status = ratingService.addRate(tourOfferId, request);
+        HttpStatus status = ratingService.addRating(tourOfferId, request);
         return ResponseEntity.status(status).build();
     }
     

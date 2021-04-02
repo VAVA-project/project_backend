@@ -30,7 +30,7 @@ public class RatingService {
     private final TourOfferRepository tourOfferRepository;
     private final AppUserUtils appUserUtils;
 
-    public HttpStatus addRate(UUID tourOfferId, RatingRequest request) {
+    public HttpStatus addRating(UUID tourOfferId, RatingRequest request) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
         
         TourOffer tourOffer = tourOfferRepository.findById(tourOfferId).
@@ -43,7 +43,7 @@ public class RatingService {
                 findByUserIdAndTourOfferId(user.
                         getId(), tourOfferId);
 
-        Rating rating = null;
+        Rating rating;
 
         if (optionalRating.isPresent()) {
             returnStatus = HttpStatus.OK;
