@@ -24,6 +24,7 @@ import javax.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import sk.stu.fiit.projectBackend.Rating.Rating;
 import sk.stu.fiit.projectBackend.TourDate.TourDate;
 import sk.stu.fiit.projectBackend.TourOffer.dto.CreateTourOfferRequest;
 import sk.stu.fiit.projectBackend.User.AppUser;
@@ -86,6 +87,12 @@ public class TourOffer implements Serializable {
             mappedBy = "tourOffer"
     )
     private List<TourDate> tourDates = new ArrayList<>(0);
+    
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "tourOffer"
+    )
+    private List<Rating> ratings = new ArrayList<>(0);
 
     public TourOffer(String startPlace, String destinationPlace,
             String description, double pricePerPerson) {
@@ -118,6 +125,20 @@ public class TourOffer implements Serializable {
 
         this.tourDates.remove(tourDate);
         tourDate.setTourOffer(null);
+    }
+    
+    public void addRating(Rating rating) {
+        if(rating == null) return;
+        
+        this.ratings.add(rating);
+        rating.setTourOffer(this);
+    }
+    
+    public void removeRating(Rating rating) {
+        if(rating == null) return;
+        
+        this.ratings.remove(rating);
+        rating.setTourOffer(null);
     }
 
 }
