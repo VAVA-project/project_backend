@@ -8,12 +8,19 @@ package sk.stu.fiit.projectBackend.User;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import static sk.stu.fiit.projectBackend.Other.Constants.USER_NOT_FOUND;
+import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
+import sk.stu.fiit.projectBackend.TourOffer.TourOfferRepository;
+import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferPage;
 import sk.stu.fiit.projectBackend.User.dto.LoginRequest;
 import sk.stu.fiit.projectBackend.User.dto.LoginResponse;
 import sk.stu.fiit.projectBackend.User.dto.RegisterRequest;
@@ -33,6 +40,7 @@ import sk.stu.fiit.projectBackend.exceptions.IncorrectUsernameOrPasswordExceptio
 public class AppUserService implements UserDetailsService {
 
     private final AppUserRepository appUserRepository;
+    private final TourOfferRepository tourOfferRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JWTUtil jwtUtil;
     private final AppUserUtils appUserUtils;
@@ -122,6 +130,16 @@ public class AppUserService implements UserDetailsService {
         appUserRepository.save(user);
         
         return user;
+    }
+    
+    public Page<TourOffer> getUsersTourOffers(TourOfferPage page) {
+        AppUser user = appUserUtils.getCurrentlyLoggedUser();
+        
+        Sort sort = Sort.by(page.getSortDirection(), page.getSortBy());
+        Pageable pageable = PageRequest.of(page.getPageNumber(), page.
+                getPageSize(), sort);
+
+        return tourOfferRepository.findAllByUserId(user.getId(), pageable);
     }
     
 }

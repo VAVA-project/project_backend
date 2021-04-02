@@ -8,12 +8,10 @@ package sk.stu.fiit.projectBackend.TourOffer;
 import java.util.UUID;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sk.stu.fiit.projectBackend.TourOffer.dto.CreateTourOfferRequest;
-import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferPage;
 import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferResponse;
 import sk.stu.fiit.projectBackend.TourOffer.dto.UpdateTourOfferRequest;
 
@@ -55,12 +52,6 @@ public class TourOfferController {
             name = "tourOfferId") UUID id,
             @Valid @RequestBody UpdateTourOfferRequest request) {
         return ResponseEntity.ok(tourOfferService.updateTourOffer(id, request));
-    }
-
-    @GetMapping(path = "/")
-    public ResponseEntity<Page<TourOffer>> getUsersTourOffers(@Valid TourOfferPage page) {
-        return new ResponseEntity<>(tourOfferService.getUsersTourOffers(page),
-                HttpStatus.OK);
     }
 
 }
