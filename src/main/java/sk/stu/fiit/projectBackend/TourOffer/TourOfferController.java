@@ -8,7 +8,6 @@ package sk.stu.fiit.projectBackend.TourOffer;
 import java.util.UUID;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sk.stu.fiit.projectBackend.TourOffer.dto.CreateTourOfferRequest;
-import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferPage;
 import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferResponse;
 import sk.stu.fiit.projectBackend.TourOffer.dto.UpdateTourOfferRequest;
 
@@ -30,7 +28,7 @@ import sk.stu.fiit.projectBackend.TourOffer.dto.UpdateTourOfferRequest;
  * @author Adam Bublavý
  */
 @RestController
-@RequestMapping(path = "api/v1/tourOffer")
+@RequestMapping(path = "api/v1/tours")
 @AllArgsConstructor
 public class TourOfferController {
 
@@ -50,17 +48,19 @@ public class TourOfferController {
         return ResponseEntity.status(responseStatus).body(null);
     }
 
-    @PutMapping(path = "/{tourOfferId}")
+    @PutMapping(path = "/{tourOfferId}",
+            consumes = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<TourOfferResponse> updateTourOffer(@PathVariable(
             name = "tourOfferId") UUID id,
             @Valid @RequestBody UpdateTourOfferRequest request) {
         return ResponseEntity.ok(tourOfferService.updateTourOffer(id, request));
     }
 
-    @GetMapping(path = "/")
-    public ResponseEntity<Page<TourOffer>> getUsersTourOffers(@Valid TourOfferPage page) {
-        return new ResponseEntity<>(tourOfferService.getUsersTourOffers(page),
-                HttpStatus.OK);
+    @GetMapping(path = "/{tourOfferId}")
+    public ResponseEntity<TourOfferResponse> getTourOffer(
+            @PathVariable(name = "tourOfferId") UUID id
+    ) {
+        return ResponseEntity.ok(tourOfferService.getTourOffer(id));
     }
 
 }

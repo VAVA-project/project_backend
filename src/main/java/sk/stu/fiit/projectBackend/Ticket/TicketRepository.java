@@ -3,10 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sk.stu.fiit.projectBackend.TourDate;
+package sk.stu.fiit.projectBackend.Ticket;
 
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -15,5 +18,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, UUID> {
+    
+    @Query("select c from Ticket c where c.lockExpiresAt is null or c.lockExpiresAt < now()")
+    Page<Ticket> findAvailableTickets(Pageable pageable);
     
 }

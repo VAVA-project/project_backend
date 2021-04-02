@@ -24,6 +24,7 @@ import javax.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import sk.stu.fiit.projectBackend.Ticket.Ticket;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 
 /**
@@ -77,6 +78,7 @@ public class TourDate implements Serializable {
             cascade = CascadeType.ALL,
             mappedBy = "tourDate"
     )
+    @JsonIgnore
     private List<Ticket> tickets = new ArrayList<>(0);
 
     public TourDate(LocalDateTime startDate, LocalDateTime endDate) {

@@ -28,13 +28,13 @@ public class CartItemController {
 
     private final CartItemService cartItemService;
 
-    @PostMapping(path = "/ticket/{ticketId}")
+    @PostMapping(path = "/ticket/{ticketId}/")
     public ResponseEntity<Boolean> addTicketToCart(
             @PathVariable("ticketId") UUID id) {
         return ResponseEntity.ok(cartItemService.addTicketToCart(id));
     }
 
-    @DeleteMapping(path = "/ticket/{ticketId}")
+    @DeleteMapping(path = "/ticket/{ticketId}/")
     public ResponseEntity<Boolean> removeTicketFromCart(
             @PathVariable("ticketId") UUID id) {
         return ResponseEntity.ok(cartItemService.removeTicketFromCart(id));
@@ -45,7 +45,7 @@ public class CartItemController {
         return ResponseEntity.ok(cartItemService.getCartContent());
     }
     
-    @PostMapping(path = "/checkout")
+    @PostMapping(path = "/checkout/")
     public ResponseEntity<UserOrder> checkout() {
         return ResponseEntity.ok(cartItemService.checkout());
     }

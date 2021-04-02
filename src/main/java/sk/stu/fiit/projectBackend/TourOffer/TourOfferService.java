@@ -10,18 +10,12 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import static sk.stu.fiit.projectBackend.Other.Constants.TOUR_OFFER_NOT_FOUND;
 import sk.stu.fiit.projectBackend.TourOffer.dto.CreateTourOfferRequest;
-import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferPage;
 import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferResponse;
 import sk.stu.fiit.projectBackend.TourOffer.dto.UpdateTourOfferRequest;
 import sk.stu.fiit.projectBackend.User.AppUser;
-import sk.stu.fiit.projectBackend.User.AppUserRepository;
 import sk.stu.fiit.projectBackend.Utils.AppUserUtils;
 import sk.stu.fiit.projectBackend.exceptions.RecordNotFoundException;
 
@@ -34,16 +28,15 @@ import sk.stu.fiit.projectBackend.exceptions.RecordNotFoundException;
 public class TourOfferService {
 
     private final TourOfferRepository tourOfferRepository;
-    private final AppUserRepository appUserRepository;
     private final AppUserUtils appUserUtils;
 
     public TourOfferResponse createTourOffer(
             CreateTourOfferRequest request) {
-        
+
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
         TourOffer newOffer = new TourOffer(request);
-        
+
         user.addTourOffer(newOffer);
 
         TourOffer savedOffer = tourOfferRepository.save(newOffer);
@@ -81,7 +74,7 @@ public class TourOfferService {
     public TourOfferResponse updateTourOffer(UUID id,
             UpdateTourOfferRequest request) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
-        
+
         TourOffer tourOffer = user.getTourOffers().stream().filter(e -> e.
                 getId().equals(id)).findFirst().orElseThrow(
                 () -> new RecordNotFoundException(String.format(
@@ -91,7 +84,7 @@ public class TourOfferService {
             throw new RecordNotFoundException(String.
                     format(TOUR_OFFER_NOT_FOUND, id));
         }
-        
+
         boolean updated = false;
 
         if (request.getStartPlace() != null) {
@@ -110,22 +103,27 @@ public class TourOfferService {
             tourOffer.setPricePerPerson(request.getPricePerPerson());
             updated = true;
         }
-        
-        if(updated) tourOffer.setUpdatedAt(LocalDateTime.now());
+
+        if (updated) {
+            tourOffer.setUpdatedAt(LocalDateTime.now());
+        }
 
         TourOffer updatedOffer = tourOfferRepository.save(tourOffer);
 
         return new TourOfferResponse(updatedOffer);
     }
 
-    public Page<TourOffer> getUsersTourOffers(TourOfferPage page) {
-        AppUser user = appUserUtils.getCurrentlyLoggedUser();
-        
-        Sort sort = Sort.by(page.getSortDirection(), page.getSortBy());
-        Pageable pageable = PageRequest.of(page.getPageNumber(), page.
-                getPageSize(), sort);
+    public TourOfferResponse getTourOffer(UUID id) {
+        TourOffer tourOffer = tourOfferRepository.findById(id).orElseThrow(
+                () -> new RecordNotFoundException(
+                        String.format(TOUR_OFFER_NOT_FOUND, id)));
 
-        return tourOfferRepository.findAllByUserId(user.getId(), pageable);
+        if (tourOffer.getDeletedAt() != null) {
+            throw new RecordNotFoundException(
+                    String.format(TOUR_OFFER_NOT_FOUND, id));
+        }
+
+        return new TourOfferResponse(tourOffer);
     }
 
 }

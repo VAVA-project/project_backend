@@ -31,7 +31,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import sk.stu.fiit.projectBackend.Cart.CartTicket;
 import sk.stu.fiit.projectBackend.Order.UserOrder;
 import sk.stu.fiit.projectBackend.Rating.Rating;
-import sk.stu.fiit.projectBackend.TourDate.Ticket;
+import sk.stu.fiit.projectBackend.Ticket.Ticket;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 
 /**
@@ -87,12 +87,11 @@ public class AppUser implements UserDetails {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    private LocalDateTime deletedAt;
-
     @OneToMany(
             cascade = CascadeType.ALL,
             mappedBy = "user"
     )
+    @JsonIgnore
     private List<TourOffer> tourOffers = new ArrayList<>(0);
 
     @OneToMany(
@@ -100,24 +99,28 @@ public class AppUser implements UserDetails {
             mappedBy = "user",
             orphanRemoval = true
     )
+    @JsonIgnore
     private List<CartTicket> cartTickets = new ArrayList<>(0);
 
     @OneToMany(
             cascade = CascadeType.ALL,
             mappedBy = "user"
     )
+    @JsonIgnore
     private List<UserOrder> orders = new ArrayList<>(0);
 
     @OneToMany(
             cascade = CascadeType.ALL,
             mappedBy = "user"
     )
+    @JsonIgnore
     private List<Ticket> tickets = new ArrayList<>(0);
     
     @OneToMany(
             cascade = CascadeType.ALL,
             mappedBy = "user"
     )
+    @JsonIgnore
     private List<Rating> ratings = new ArrayList<>(0);
 
     public AppUser(String email, String password, AppUserTypes type,
@@ -218,6 +221,7 @@ public class AppUser implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(type.
                 name());
@@ -225,31 +229,37 @@ public class AppUser implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public String getUsername() {
         return email;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public String getPassword() {
         return password;
     }

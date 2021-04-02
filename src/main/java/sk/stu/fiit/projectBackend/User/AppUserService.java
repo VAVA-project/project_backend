@@ -5,18 +5,28 @@
  */
 package sk.stu.fiit.projectBackend.User;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import static sk.stu.fiit.projectBackend.Other.Constants.USER_NOT_FOUND;
+import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
+import sk.stu.fiit.projectBackend.TourOffer.TourOfferRepository;
+import sk.stu.fiit.projectBackend.TourOffer.dto.DataPage;
 import sk.stu.fiit.projectBackend.User.dto.LoginRequest;
 import sk.stu.fiit.projectBackend.User.dto.LoginResponse;
 import sk.stu.fiit.projectBackend.User.dto.RegisterRequest;
 import sk.stu.fiit.projectBackend.User.dto.RegisterResponse;
+import sk.stu.fiit.projectBackend.User.dto.UpdateRequest;
+import sk.stu.fiit.projectBackend.Utils.AppUserUtils;
 import sk.stu.fiit.projectBackend.Utils.JWTUtil;
 import sk.stu.fiit.projectBackend.exceptions.EmailTakenException;
 import sk.stu.fiit.projectBackend.exceptions.IncorrectUsernameOrPasswordException;
@@ -30,8 +40,10 @@ import sk.stu.fiit.projectBackend.exceptions.IncorrectUsernameOrPasswordExceptio
 public class AppUserService implements UserDetailsService {
 
     private final AppUserRepository appUserRepository;
+    private final TourOfferRepository tourOfferRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JWTUtil jwtUtil;
+    private final AppUserUtils appUserUtils;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws
@@ -81,7 +93,53 @@ public class AppUserService implements UserDetailsService {
         
         String jwtToken = jwtUtil.generateToken(user);
         
-        return new LoginResponse(jwtToken);
+        return new LoginResponse(jwtToken, user);
+    }
+    
+    public AppUser me() {
+        AppUser user = appUserUtils.getCurrentlyLoggedUser();
+        
+        return user;
+    }
+    
+    public AppUser updateUser(UpdateRequest request) {
+        AppUser user = appUserUtils.getCurrentlyLoggedUser();
+        int hashBeforeUpdate = user.hashCode();
+        
+        if(request.getPassword() != null) {
+            String hashedPassword = bCryptPasswordEncoder.encode(request.getPassword());
+            user.setPassword(hashedPassword);
+        }
+        if(request.getFirstName() != null) {
+            user.setFirstName(request.getFirstName());
+        }
+        if(request.getLastName() != null) {
+            user.setLastName(request.getLastName());
+        }
+        if(request.getDateOfBirth() != null) {
+            user.setDateOfBirth(request.getDateOfBirth());
+        }
+        if(request.getPhoto() != null) {
+            user.setPhoto(request.getPhoto());
+        }
+        
+        if(hashBeforeUpdate != user.hashCode()) {
+            user.setUpdatedAt(LocalDateTime.now());
+        }
+        
+        appUserRepository.save(user);
+        
+        return user;
+    }
+    
+    public Page<TourOffer> getUsersTourOffers(DataPage page) {
+        AppUser user = appUserUtils.getCurrentlyLoggedUser();
+        
+        Sort sort = Sort.by(page.getSortDirection(), page.getSortBy());
+        Pageable pageable = PageRequest.of(page.getPageNumber(), page.
+                getPageSize(), sort);
+
+        return tourOfferRepository.findAllByUserId(user.getId(), pageable);
     }
     
 }
