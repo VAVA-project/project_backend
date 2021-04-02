@@ -50,7 +50,7 @@ public class TourDateController {
         return ResponseEntity.ok(tourDateService.updateTourDate(tourOfferId,
                 tourDateId, request));
     }
-    
+
     @DeleteMapping(path = "/dates/{tourDateId}/")
     public ResponseEntity<Object> deleteTourDate(
             @PathVariable("tourOfferId") UUID tourOfferId,

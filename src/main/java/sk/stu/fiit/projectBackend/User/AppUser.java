@@ -31,7 +31,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import sk.stu.fiit.projectBackend.Cart.CartTicket;
 import sk.stu.fiit.projectBackend.Order.UserOrder;
 import sk.stu.fiit.projectBackend.Rating.Rating;
-import sk.stu.fiit.projectBackend.TourDate.Ticket;
+import sk.stu.fiit.projectBackend.Ticket.Ticket;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 
 /**

@@ -5,6 +5,7 @@
  */
 package sk.stu.fiit.projectBackend.TourDate;
 
+import sk.stu.fiit.projectBackend.Ticket.Ticket;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import javax.transaction.Transactional;
@@ -144,5 +145,5 @@ public class TourDateService {
         
         return HttpStatus.NO_CONTENT;
     }
-
+    
 }

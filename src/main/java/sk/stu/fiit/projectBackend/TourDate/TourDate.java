@@ -5,6 +5,7 @@
  */
 package sk.stu.fiit.projectBackend.TourDate;
 
+import sk.stu.fiit.projectBackend.Ticket.Ticket;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.time.LocalDateTime;

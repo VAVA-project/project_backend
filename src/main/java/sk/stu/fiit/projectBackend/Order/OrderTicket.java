@@ -21,7 +21,7 @@ import javax.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
-import sk.stu.fiit.projectBackend.TourDate.Ticket;
+import sk.stu.fiit.projectBackend.Ticket.Ticket;
 
 /**
  *
