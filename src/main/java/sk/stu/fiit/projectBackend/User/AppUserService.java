@@ -17,6 +17,7 @@ import sk.stu.fiit.projectBackend.User.dto.LoginRequest;
 import sk.stu.fiit.projectBackend.User.dto.LoginResponse;
 import sk.stu.fiit.projectBackend.User.dto.RegisterRequest;
 import sk.stu.fiit.projectBackend.User.dto.RegisterResponse;
+import sk.stu.fiit.projectBackend.Utils.AppUserUtils;
 import sk.stu.fiit.projectBackend.Utils.JWTUtil;
 import sk.stu.fiit.projectBackend.exceptions.EmailTakenException;
 import sk.stu.fiit.projectBackend.exceptions.IncorrectUsernameOrPasswordException;
@@ -32,6 +33,7 @@ public class AppUserService implements UserDetailsService {
     private final AppUserRepository appUserRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JWTUtil jwtUtil;
+    private final AppUserUtils appUserUtils;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws
@@ -82,6 +84,12 @@ public class AppUserService implements UserDetailsService {
         String jwtToken = jwtUtil.generateToken(user);
         
         return new LoginResponse(jwtToken);
+    }
+    
+    public AppUser me() {
+        AppUser user = appUserUtils.getCurrentlyLoggedUser();
+        
+        return user;
     }
     
 }

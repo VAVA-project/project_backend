@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +44,11 @@ public class AppUserController {
             @Valid @RequestBody LoginRequest request) {
         
         return ResponseEntity.ok(appUserService.login(request));
+    }
+    
+    @GetMapping(path = "/me")
+    public ResponseEntity<AppUser> me() {
+        return ResponseEntity.ok(appUserService.me());
     }
     
 }
