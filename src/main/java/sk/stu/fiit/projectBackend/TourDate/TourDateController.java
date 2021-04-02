@@ -8,8 +8,10 @@ package sk.stu.fiit.projectBackend.TourDate;
 import java.util.UUID;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,12 +28,12 @@ import sk.stu.fiit.projectBackend.TourDate.dto.UpdateTourDateRequest;
  */
 @RestController
 @AllArgsConstructor
-@RequestMapping(path = "api/v1/tourOffer")
+@RequestMapping(path = "api/v1/tours/{tourOfferId}")
 public class TourDateController {
 
     private final TourDateService tourDateService;
 
-    @PostMapping(path = "/{tourOfferId}/tourDate",
+    @PostMapping(path = "/dates/",
             consumes = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<TourDateResponse> createTourDate(
             @PathVariable("tourOfferId") UUID id,
@@ -39,7 +41,7 @@ public class TourDateController {
         return ResponseEntity.ok(tourDateService.createTourDate(id, request));
     }
 
-    @PutMapping(path = "/{tourOfferId}/tourDate/{tourDateId}",
+    @PutMapping(path = "/dates/{tourDateId}/",
             consumes = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<TourDateResponse> updateTourDate(
             @PathVariable("tourOfferId") UUID tourOfferId,
@@ -47,6 +49,16 @@ public class TourDateController {
             @Valid @RequestBody UpdateTourDateRequest request) {
         return ResponseEntity.ok(tourDateService.updateTourDate(tourOfferId,
                 tourDateId, request));
+    }
+    
+    @DeleteMapping(path = "/dates/{tourDateId}/")
+    public ResponseEntity<Object> deleteTourDate(
+            @PathVariable("tourOfferId") UUID tourOfferId,
+            @PathVariable("tourDateId") UUID tourDateId
+    ) {
+        HttpStatus status = tourDateService.deleteTourDate(tourOfferId,
+                tourDateId);
+        return ResponseEntity.status(status).build();
     }
 
 }
