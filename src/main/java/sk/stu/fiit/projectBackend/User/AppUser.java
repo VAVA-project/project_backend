@@ -30,6 +30,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import sk.stu.fiit.projectBackend.Cart.CartTicket;
 import sk.stu.fiit.projectBackend.Order.UserOrder;
+import sk.stu.fiit.projectBackend.Rating.Rating;
 import sk.stu.fiit.projectBackend.TourDate.Ticket;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 
@@ -112,6 +113,12 @@ public class AppUser implements UserDetails {
             mappedBy = "user"
     )
     private List<Ticket> tickets = new ArrayList<>(0);
+    
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            mappedBy = "user"
+    )
+    private List<Rating> ratings = new ArrayList<>(0);
 
     public AppUser(String email, String password, AppUserTypes type,
             String firstName, String lastName, LocalDate dateOfBirth,
@@ -194,6 +201,20 @@ public class AppUser implements UserDetails {
         
         orders.remove(order);
         order.setUser(null);
+    }
+    
+    public void addRating(Rating rating) {
+        if(rating == null) return;
+        
+        this.ratings.add(rating);
+        rating.setUser(this);
+    }
+    
+    public void removeRating(Rating rating) {
+        if(rating == null) return;
+        
+        this.ratings.remove(rating);
+        rating.setUser(null);
     }
 
     @Override
