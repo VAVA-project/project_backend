@@ -7,6 +7,7 @@ package sk.stu.fiit.projectBackend.User.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import sk.stu.fiit.projectBackend.User.AppUser;
 
 /**
  *
@@ -18,5 +19,6 @@ import lombok.Getter;
 public class LoginResponse {
     
     private final String jwtToken;
+    private final AppUser user;
     
 }

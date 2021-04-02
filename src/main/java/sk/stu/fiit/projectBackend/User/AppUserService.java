@@ -93,7 +93,7 @@ public class AppUserService implements UserDetailsService {
         
         String jwtToken = jwtUtil.generateToken(user);
         
-        return new LoginResponse(jwtToken);
+        return new LoginResponse(jwtToken, user);
     }
     
     public AppUser me() {
