@@ -6,6 +6,8 @@
 package sk.stu.fiit.projectBackend.TourDate;
 
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,5 +17,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface TourDateRepository extends JpaRepository<TourDate, UUID>{
+    
+    Page<TourDate> findByTourOfferIdAndDeletedAtIsNull(UUID tourOfferId, Pageable pageable);
     
 }
