@@ -13,8 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import sk.stu.fiit.projectBackend.TourOffer.dto.DataPage;
-import sk.stu.fiit.projectBackend.User.AppUser;
-import sk.stu.fiit.projectBackend.Utils.AppUserUtils;
 
 /**
  *
@@ -25,11 +23,8 @@ import sk.stu.fiit.projectBackend.Utils.AppUserUtils;
 public class TicketService {
     
     private final TicketRepository ticketRepository;
-    private final AppUserUtils appUserUtils;
     
     public Page<Ticket> getAvailableTickets(UUID dateId, DataPage page) {
-        AppUser user = appUserUtils.getCurrentlyLoggedUser();
-        
         Sort sort = Sort.by(page.getSortDirection(), page.getSortBy());
         Pageable pageable = PageRequest.of(page.getPageNumber(), page.
                 getPageSize(), sort);
