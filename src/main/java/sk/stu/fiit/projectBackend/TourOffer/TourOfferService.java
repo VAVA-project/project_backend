@@ -32,11 +32,11 @@ public class TourOfferService {
 
     public TourOfferResponse createTourOffer(
             CreateTourOfferRequest request) {
-        
+
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
         TourOffer newOffer = new TourOffer(request);
-        
+
         user.addTourOffer(newOffer);
 
         TourOffer savedOffer = tourOfferRepository.save(newOffer);
@@ -74,7 +74,7 @@ public class TourOfferService {
     public TourOfferResponse updateTourOffer(UUID id,
             UpdateTourOfferRequest request) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
-        
+
         TourOffer tourOffer = user.getTourOffers().stream().filter(e -> e.
                 getId().equals(id)).findFirst().orElseThrow(
                 () -> new RecordNotFoundException(String.format(
@@ -84,7 +84,7 @@ public class TourOfferService {
             throw new RecordNotFoundException(String.
                     format(TOUR_OFFER_NOT_FOUND, id));
         }
-        
+
         boolean updated = false;
 
         if (request.getStartPlace() != null) {
@@ -103,12 +103,27 @@ public class TourOfferService {
             tourOffer.setPricePerPerson(request.getPricePerPerson());
             updated = true;
         }
-        
-        if(updated) tourOffer.setUpdatedAt(LocalDateTime.now());
+
+        if (updated) {
+            tourOffer.setUpdatedAt(LocalDateTime.now());
+        }
 
         TourOffer updatedOffer = tourOfferRepository.save(tourOffer);
 
         return new TourOfferResponse(updatedOffer);
+    }
+
+    public TourOfferResponse getTourOffer(UUID id) {
+        TourOffer tourOffer = tourOfferRepository.findById(id).orElseThrow(
+                () -> new RecordNotFoundException(
+                        String.format(TOUR_OFFER_NOT_FOUND, id)));
+
+        if (tourOffer.getDeletedAt() != null) {
+            throw new RecordNotFoundException(
+                    String.format(TOUR_OFFER_NOT_FOUND, id));
+        }
+
+        return new TourOfferResponse(tourOffer);
     }
 
 }
