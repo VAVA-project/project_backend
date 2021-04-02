@@ -5,6 +5,7 @@
  */
 package sk.stu.fiit.projectBackend.User;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +18,7 @@ import sk.stu.fiit.projectBackend.User.dto.LoginRequest;
 import sk.stu.fiit.projectBackend.User.dto.LoginResponse;
 import sk.stu.fiit.projectBackend.User.dto.RegisterRequest;
 import sk.stu.fiit.projectBackend.User.dto.RegisterResponse;
+import sk.stu.fiit.projectBackend.User.dto.UpdateRequest;
 import sk.stu.fiit.projectBackend.Utils.AppUserUtils;
 import sk.stu.fiit.projectBackend.Utils.JWTUtil;
 import sk.stu.fiit.projectBackend.exceptions.EmailTakenException;
@@ -88,6 +90,36 @@ public class AppUserService implements UserDetailsService {
     
     public AppUser me() {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
+        
+        return user;
+    }
+    
+    public AppUser updateUser(UpdateRequest request) {
+        AppUser user = appUserUtils.getCurrentlyLoggedUser();
+        int hashBeforeUpdate = user.hashCode();
+        
+        if(request.getPassword() != null) {
+            String hashedPassword = bCryptPasswordEncoder.encode(request.getPassword());
+            user.setPassword(hashedPassword);
+        }
+        if(request.getFirstName() != null) {
+            user.setFirstName(request.getFirstName());
+        }
+        if(request.getLastName() != null) {
+            user.setLastName(request.getLastName());
+        }
+        if(request.getDateOfBirth() != null) {
+            user.setDateOfBirth(request.getDateOfBirth());
+        }
+        if(request.getPhoto() != null) {
+            user.setPhoto(request.getPhoto());
+        }
+        
+        if(hashBeforeUpdate != user.hashCode()) {
+            user.setUpdatedAt(LocalDateTime.now());
+        }
+        
+        appUserRepository.save(user);
         
         return user;
     }
