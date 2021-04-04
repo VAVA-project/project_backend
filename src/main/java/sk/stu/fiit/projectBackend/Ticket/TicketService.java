@@ -29,7 +29,7 @@ public class TicketService {
         Pageable pageable = PageRequest.of(page.getPageNumber(), page.
                 getPageSize(), sort);
 
-        return ticketRepository.findAvailableTickets(pageable);
+        return ticketRepository.findAvailableTickets(dateId, pageable);
     }
     
 }

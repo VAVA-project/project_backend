@@ -19,7 +19,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, UUID> {
     
-    @Query("select c from Ticket c where c.lockExpiresAt is null or c.lockExpiresAt < now()")
-    Page<Ticket> findAvailableTickets(Pageable pageable);
+    @Query("select c from Ticket c where c.tourDate.id = ?1 and c.tourDate.deletedAt is null and (c.lockExpiresAt is null or c.lockExpiresAt < now())")
+    Page<Ticket> findAvailableTickets(UUID dateId, Pageable pageable);
     
 }
