@@ -34,6 +34,10 @@ public class RatingService {
         
         TourOffer tourOffer = tourOfferRepository.findById(tourOfferId).
                 orElseThrow(() -> new TourOfferNotFoundException(tourOfferId));
+        
+        if(tourOffer.getDeletedAt() != null) {
+            throw new TourOfferNotFoundException(tourOfferId);
+        }
 
         HttpStatus returnStatus = HttpStatus.CREATED;
 

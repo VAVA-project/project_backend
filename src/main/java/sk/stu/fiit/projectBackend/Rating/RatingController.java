@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,11 +36,6 @@ public class RatingController {
             @Valid @RequestBody RatingRequest request) {
         HttpStatus status = ratingService.addRating(tourOfferId, request);
         return ResponseEntity.status(status).build();
-    }
-    
-    @GetMapping(path = "/")
-    public ResponseEntity<String> hello() {
-        return ResponseEntity.ok("Are you fucking kidding me?");
     }
 
 }

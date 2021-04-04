@@ -5,6 +5,7 @@
  */
 package sk.stu.fiit.projectBackend.exceptions;
 
+import java.util.UUID;
 import static sk.stu.fiit.projectBackend.Other.Constants.CART_TICKETS_EXPIRED;
 
 /**
@@ -17,8 +18,8 @@ public class TicketPurchaseTimeExpiredException extends RuntimeException {
         super(message);
     }
 
-    public TicketPurchaseTimeExpiredException() {
-        super(CART_TICKETS_EXPIRED);
+    public TicketPurchaseTimeExpiredException(UUID id) {
+        super(String.format(CART_TICKETS_EXPIRED, id));
     }
     
 }

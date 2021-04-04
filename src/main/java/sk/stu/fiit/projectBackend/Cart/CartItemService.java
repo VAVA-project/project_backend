@@ -111,13 +111,15 @@ public class CartItemService {
             throw new CartIsEmptyException();
         }
 
-        // check if all tickets are still locked by me
+        // check if all tickets are still locked by me and if tour date is not deleted
         cartTickets.stream().
                 filter(cartTicket -> (cartTicket.getTicket().getLockExpiresAt().
-                isBefore(LocalDateTime.now()) && !cartTicket.getTicket().
-                getUser().getId().equals(user.getId()))).
+                isBefore(LocalDateTime.now())
+                || !cartTicket.getTicket().getUser().getId().
+                        equals(user.getId())
+                || cartTicket.getTicket().getTourDate().getDeletedAt() != null)).
                 forEachOrdered(_item -> {
-                    throw new TicketPurchaseTimeExpiredException();
+                    throw new TicketPurchaseTimeExpiredException(_item.getId());
                 });
 
         double totalPrice = calculateTotalPriceForTickets(cartTickets);
