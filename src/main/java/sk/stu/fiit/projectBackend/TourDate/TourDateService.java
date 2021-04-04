@@ -145,8 +145,11 @@ public class TourDateService {
         Pageable pageable = PageRequest.of(page.getPageNumber(), page.
                 getPageSize(), sort);
 
-        return tourDateRepository.findByTourOfferIdAndDeletedAtIsNull(dateId,
-                pageable);
+        return tourDateRepository.
+                findByTourOfferIdAndDeletedAtIsNullAndStartDateGreaterThanEqual(
+                        dateId,
+                        LocalDateTime.now(),
+                        pageable);
     }
 
 }

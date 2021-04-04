@@ -23,6 +23,6 @@ public interface TourOfferRepository extends JpaRepository<TourOffer, UUID> {
     @Query("select c from TourOffer c where c.user.id = :creatorId and c.deletedAt is null")
     Page<TourOffer> findAllByUserId(@Param("creatorId") UUID id, Pageable pageable);
     
-    Page<TourOffer> findByStartPlaceContainingOrDestinationPlaceContaining(String startPlaceQuery, String destinationPlaceQuery, Pageable pageable);
+    Page<TourOffer> findByDeletedAtIsNullAndStartPlaceContainingOrDestinationPlaceContaining(String startPlaceQuery, String destinationPlaceQuery, Pageable pageable);
     
 }

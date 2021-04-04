@@ -29,7 +29,7 @@ public class TourOfferResponse {
     
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    
+
     public TourOfferResponse(TourOffer offer) {
         this.id = offer.getId();
         this.creatorId = offer.getUser().getId();

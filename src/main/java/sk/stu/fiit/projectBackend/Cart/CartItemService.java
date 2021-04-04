@@ -15,7 +15,6 @@ import sk.stu.fiit.projectBackend.Cart.dto.CartResponse;
 import sk.stu.fiit.projectBackend.Order.OrderRepository;
 import sk.stu.fiit.projectBackend.Order.OrderTicket;
 import sk.stu.fiit.projectBackend.Order.UserOrder;
-import static sk.stu.fiit.projectBackend.Other.Constants.CART_TICKETS_EXPIRED;
 import static sk.stu.fiit.projectBackend.Other.Constants.TICKET_ALREADY_PURCHASED;
 import sk.stu.fiit.projectBackend.Ticket.Ticket;
 import sk.stu.fiit.projectBackend.Ticket.TicketRepository;
@@ -118,8 +117,7 @@ public class CartItemService {
                 isBefore(LocalDateTime.now()) && !cartTicket.getTicket().
                 getUser().getId().equals(user.getId()))).
                 forEachOrdered(_item -> {
-                    throw new TicketPurchaseTimeExpiredException(
-                            CART_TICKETS_EXPIRED);
+                    throw new TicketPurchaseTimeExpiredException();
                 });
 
         double totalPrice = calculateTotalPriceForTickets(cartTickets);
