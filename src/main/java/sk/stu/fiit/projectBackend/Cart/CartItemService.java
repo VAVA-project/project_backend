@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import sk.stu.fiit.projectBackend.Cart.dto.CartResponse;
+import sk.stu.fiit.projectBackend.Cart.dto.CheckoutRequest;
 import sk.stu.fiit.projectBackend.Order.OrderRepository;
 import sk.stu.fiit.projectBackend.Order.OrderTicket;
 import sk.stu.fiit.projectBackend.Order.UserOrder;
@@ -103,7 +104,7 @@ public class CartItemService {
     }
 
     @Transactional
-    public UserOrder checkout() {
+    public UserOrder checkout(CheckoutRequest request) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
         List<CartTicket> cartTickets = user.getCartTickets();
@@ -126,7 +127,7 @@ public class CartItemService {
 
         // create new order
         UserOrder order = new UserOrder(LocalDateTime.now(),
-                totalPrice, null);
+                totalPrice, request.getComments());
         user.addOrder(order);
 
         cartTickets.forEach(cartTicket -> {
