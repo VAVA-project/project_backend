@@ -5,6 +5,8 @@
  */
 package sk.stu.fiit.projectBackend.User;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import java.util.UUID;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +27,7 @@ import sk.stu.fiit.projectBackend.User.dto.LoginResponse;
 import sk.stu.fiit.projectBackend.User.dto.RegisterRequest;
 import sk.stu.fiit.projectBackend.User.dto.RegisterResponse;
 import sk.stu.fiit.projectBackend.User.dto.UpdateRequest;
+import sk.stu.fiit.projectBackend.Views.Views;
 
 /**
  *
@@ -61,6 +65,14 @@ public class AppUserController {
     public ResponseEntity<AppUser> updateUser(
             @Valid @RequestBody UpdateRequest request) {
         return ResponseEntity.ok(appUserService.updateUser(request));
+    }
+    
+    @GetMapping(path = "/users/{userId}/")
+    @JsonView(Views.Public.class)
+    public ResponseEntity<AppUser> getUser(
+            @PathVariable("userId") UUID userId
+    ) {
+        return ResponseEntity.ok(appUserService.getUser(userId));
     }
 
     @GetMapping(path = "/users/tours/")

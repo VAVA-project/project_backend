@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import sk.stu.fiit.projectBackend.Cart.dto.CartResponse;
 import sk.stu.fiit.projectBackend.Cart.dto.CheckoutRequest;
-import sk.stu.fiit.projectBackend.Order.OrderRepository;
 import sk.stu.fiit.projectBackend.Order.OrderTicket;
 import sk.stu.fiit.projectBackend.Order.UserOrder;
 import static sk.stu.fiit.projectBackend.Other.Constants.TICKET_ALREADY_PURCHASED;
@@ -26,6 +25,7 @@ import sk.stu.fiit.projectBackend.exceptions.CartIsEmptyException;
 import sk.stu.fiit.projectBackend.exceptions.TicketIsPurchased;
 import sk.stu.fiit.projectBackend.exceptions.TicketNotFoundException;
 import sk.stu.fiit.projectBackend.exceptions.TicketPurchaseTimeExpiredException;
+import sk.stu.fiit.projectBackend.Order.UserOrderRepository;
 
 /**
  *
@@ -40,7 +40,7 @@ public class CartItemService {
     private final TicketRepository ticketRepository;
     private final AppUserRepository appUserRepository;
     private final CartItemRepository cartTicketRepository;
-    private final OrderRepository orderRepository;
+    private final UserOrderRepository orderRepository;
     private final AppUserUtils appUserUtils;
 
     @Transactional

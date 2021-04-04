@@ -6,6 +6,7 @@
 package sk.stu.fiit.projectBackend.User;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import sk.stu.fiit.projectBackend.Order.UserOrder;
 import sk.stu.fiit.projectBackend.Rating.Rating;
 import sk.stu.fiit.projectBackend.Ticket.Ticket;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
+import sk.stu.fiit.projectBackend.Views.Views;
 
 /**
  *
@@ -54,6 +56,7 @@ public class AppUser implements UserDetails {
             updatable = false,
             nullable = false
     )
+    @JsonView(Views.Public.class)
     private UUID id;
 
     @Column(
@@ -71,14 +74,17 @@ public class AppUser implements UserDetails {
     private AppUserTypes type;
 
     @Column(nullable = false)
+    @JsonView(Views.Public.class)
     private String firstName;
 
     @Column(nullable = false)
+    @JsonView(Views.Public.class)
     private String lastName;
 
     @Column(nullable = false)
     private LocalDate dateOfBirth;
 
+    @JsonView(Views.Public.class)
     private byte[] photo;
 
     @Column(nullable = false)

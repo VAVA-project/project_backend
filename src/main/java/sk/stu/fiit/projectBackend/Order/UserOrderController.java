@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Adam Bublavý
  */
 @RestController
-@RequestMapping("api/v1/order")
-public class OrderController {
-    
-    
+@RequestMapping("api/v1/users/orders")
+public class UserOrderController {
     
 }
