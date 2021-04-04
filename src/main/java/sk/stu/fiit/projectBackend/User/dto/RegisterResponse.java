@@ -6,16 +6,16 @@
 package sk.stu.fiit.projectBackend.User.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
 /**
  *
  * @author Adam Bublavý
  */
+@Data
 @AllArgsConstructor
-@Getter
 public class RegisterResponse {
     
-    private final String jwtToken;
-    
+    private String jwtToken;
+
 }

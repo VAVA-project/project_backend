@@ -11,13 +11,12 @@ import java.util.UUID;
 import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import static sk.stu.fiit.projectBackend.Other.Constants.TOUR_OFFER_NOT_FOUND;
 import sk.stu.fiit.projectBackend.TourOffer.dto.CreateTourOfferRequest;
 import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferResponse;
 import sk.stu.fiit.projectBackend.TourOffer.dto.UpdateTourOfferRequest;
 import sk.stu.fiit.projectBackend.User.AppUser;
 import sk.stu.fiit.projectBackend.Utils.AppUserUtils;
-import sk.stu.fiit.projectBackend.exceptions.RecordNotFoundException;
+import sk.stu.fiit.projectBackend.exceptions.TourOfferNotFoundException;
 
 /**
  *
@@ -77,12 +76,10 @@ public class TourOfferService {
 
         TourOffer tourOffer = user.getTourOffers().stream().filter(e -> e.
                 getId().equals(id)).findFirst().orElseThrow(
-                () -> new RecordNotFoundException(String.format(
-                        TOUR_OFFER_NOT_FOUND, id)));
+                () -> new TourOfferNotFoundException(id));
 
         if (tourOffer.getDeletedAt() != null) {
-            throw new RecordNotFoundException(String.
-                    format(TOUR_OFFER_NOT_FOUND, id));
+            throw new TourOfferNotFoundException(id);
         }
 
         boolean updated = false;
@@ -115,12 +112,10 @@ public class TourOfferService {
 
     public TourOfferResponse getTourOffer(UUID id) {
         TourOffer tourOffer = tourOfferRepository.findById(id).orElseThrow(
-                () -> new RecordNotFoundException(
-                        String.format(TOUR_OFFER_NOT_FOUND, id)));
+                () -> new TourOfferNotFoundException(id));
 
         if (tourOffer.getDeletedAt() != null) {
-            throw new RecordNotFoundException(
-                    String.format(TOUR_OFFER_NOT_FOUND, id));
+            throw new TourOfferNotFoundException(id);
         }
 
         return new TourOfferResponse(tourOffer);

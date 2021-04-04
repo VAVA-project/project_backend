@@ -58,7 +58,7 @@ public class AppUserService implements UserDetailsService {
                 isPresent();
 
         if (userExists) {
-            throw new EmailTakenException();
+            throw new EmailTakenException(request.getEmail());
         }
 
         String hashedPassword = bCryptPasswordEncoder.encode(request.getPassword());

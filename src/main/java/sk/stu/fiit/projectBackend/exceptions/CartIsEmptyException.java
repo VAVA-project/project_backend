@@ -5,11 +5,17 @@
  */
 package sk.stu.fiit.projectBackend.exceptions;
 
+import sk.stu.fiit.projectBackend.Other.Constants;
+
 /**
  *
  * @author Adam Bublavý
  */
 public class CartIsEmptyException extends RuntimeException {
+
+    public CartIsEmptyException() {
+        super(Constants.CART_IS_EMPTY);
+    }
 
     public CartIsEmptyException(String message) {
         super(message);

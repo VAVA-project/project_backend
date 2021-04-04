@@ -6,30 +6,28 @@
 package sk.stu.fiit.projectBackend.exceptions;
 
 import java.time.LocalDateTime;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import lombok.Getter;
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 /**
  *
  * @author Adam Bublavý
  */
-@XmlRootElement
-@Getter
-public class ApiException {
+@Data
+public class APIError {
     
-    @XmlElement
     private HttpStatus httpStatus;
-    @XmlElement
-    private LocalDateTime localDateTime;
-    @XmlElement
-    private String message;
+    private LocalDateTime timestamp;
+    private Object errors;
     
-    public ApiException(HttpStatus httpStatus, Throwable ex) {
+    private APIError() {
+        this.timestamp = LocalDateTime.now();
+    }
+
+    public APIError(HttpStatus httpStatus, Object errors) {
+        this();
         this.httpStatus = httpStatus;
-        this.message = ex.getMessage();
-        this.localDateTime = LocalDateTime.now();
+        this.errors = errors;
     }
     
 }

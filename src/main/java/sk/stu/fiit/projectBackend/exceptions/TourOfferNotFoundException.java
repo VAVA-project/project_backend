@@ -5,15 +5,17 @@
  */
 package sk.stu.fiit.projectBackend.exceptions;
 
-import static sk.stu.fiit.projectBackend.Other.Constants.EMAIL_ALREADY_TAKEN;
+import java.util.UUID;
+import sk.stu.fiit.projectBackend.Other.Constants;
 
 /**
  *
  * @author Adam Bublavý
  */
-public class EmailTakenException extends RuntimeException {
+public class TourOfferNotFoundException extends RecordNotFoundException {
 
-    public EmailTakenException(String email) {
-        super(String.format(EMAIL_ALREADY_TAKEN, email));
+    public TourOfferNotFoundException(UUID id) {
+        super(String.format(Constants.TOUR_OFFER_NOT_FOUND, id));
     }
+    
 }
