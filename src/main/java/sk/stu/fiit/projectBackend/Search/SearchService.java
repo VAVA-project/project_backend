@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import sk.stu.fiit.projectBackend.Rating.RatingRepository;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 import sk.stu.fiit.projectBackend.TourOffer.TourOfferRepository;
 import sk.stu.fiit.projectBackend.TourOffer.dto.DataPage;
@@ -24,15 +25,24 @@ import sk.stu.fiit.projectBackend.TourOffer.dto.DataPage;
 public class SearchService {
 
     private final TourOfferRepository tourOfferRepository;
-
+    private final RatingRepository ratingRepository;
+    
     public Page<TourOffer> searchTourOffers(String query, DataPage page) {
         Sort sort = Sort.by(page.getSortDirection(), page.getSortBy());
         Pageable pageable = PageRequest.of(page.getPageNumber(), page.
                 getPageSize(), sort);
 
-        return tourOfferRepository.findByStartPlaceContainingOrDestinationPlaceContaining(
+        Page<TourOffer> response = tourOfferRepository.findByDeletedAtIsNullAndStartPlaceContainingOrDestinationPlaceContaining(
                 query, query,
                 pageable);
+        
+        response.stream().forEach(e -> {
+            double averageRating = ratingRepository.calculateAverageRating(
+                    e.getId()).orElse(0.0);
+            e.setAverageRating(averageRating);
+        });
+        
+        return response;
     }
 
 }

@@ -3,19 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sk.stu.fiit.projectBackend.User.dto;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
+package sk.stu.fiit.projectBackend.Views;
 
 /**
  *
  * @author Adam Bublavý
  */
-@Data
-@AllArgsConstructor
-public class RegisterResponse {
+public class Views {
     
-    private String jwtToken;
-
+    public static class Public {}
+    
 }

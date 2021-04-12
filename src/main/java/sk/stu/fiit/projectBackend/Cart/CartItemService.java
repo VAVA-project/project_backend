@@ -12,22 +12,20 @@ import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import sk.stu.fiit.projectBackend.Cart.dto.CartResponse;
-import sk.stu.fiit.projectBackend.Order.OrderRepository;
+import sk.stu.fiit.projectBackend.Cart.dto.CheckoutRequest;
 import sk.stu.fiit.projectBackend.Order.OrderTicket;
 import sk.stu.fiit.projectBackend.Order.UserOrder;
-import static sk.stu.fiit.projectBackend.Other.Constants.CART_IS_EMPTY;
-import static sk.stu.fiit.projectBackend.Other.Constants.CART_TICKETS_EXPIRED;
 import static sk.stu.fiit.projectBackend.Other.Constants.TICKET_ALREADY_PURCHASED;
-import static sk.stu.fiit.projectBackend.Other.Constants.TICKET_NOT_FOUND;
 import sk.stu.fiit.projectBackend.Ticket.Ticket;
 import sk.stu.fiit.projectBackend.Ticket.TicketRepository;
 import sk.stu.fiit.projectBackend.User.AppUser;
 import sk.stu.fiit.projectBackend.User.AppUserRepository;
 import sk.stu.fiit.projectBackend.Utils.AppUserUtils;
 import sk.stu.fiit.projectBackend.exceptions.CartIsEmptyException;
-import sk.stu.fiit.projectBackend.exceptions.RecordNotFoundException;
 import sk.stu.fiit.projectBackend.exceptions.TicketIsPurchased;
+import sk.stu.fiit.projectBackend.exceptions.TicketNotFoundException;
 import sk.stu.fiit.projectBackend.exceptions.TicketPurchaseTimeExpiredException;
+import sk.stu.fiit.projectBackend.Order.UserOrderRepository;
 
 /**
  *
@@ -42,13 +40,13 @@ public class CartItemService {
     private final TicketRepository ticketRepository;
     private final AppUserRepository appUserRepository;
     private final CartItemRepository cartTicketRepository;
-    private final OrderRepository orderRepository;
+    private final UserOrderRepository orderRepository;
     private final AppUserUtils appUserUtils;
 
     @Transactional
     public boolean addTicketToCart(UUID ticketId) {
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(
-                () -> new RecordNotFoundException(TICKET_NOT_FOUND));
+                () -> new TicketNotFoundException(ticketId));
 
         if (ticket.getPurchasedAt() != null) {
             throw new TicketIsPurchased(TICKET_ALREADY_PURCHASED);
@@ -94,7 +92,7 @@ public class CartItemService {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(
-                () -> new RecordNotFoundException(TICKET_NOT_FOUND));
+                () -> new TicketNotFoundException(ticketId));
 
         CartTicket cartTicket = ticket.getCartTicket();
 
@@ -106,29 +104,30 @@ public class CartItemService {
     }
 
     @Transactional
-    public UserOrder checkout() {
+    public UserOrder checkout(CheckoutRequest request) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
         List<CartTicket> cartTickets = user.getCartTickets();
         if (cartTickets.isEmpty()) {
-            throw new CartIsEmptyException(CART_IS_EMPTY);
+            throw new CartIsEmptyException();
         }
 
-        // check if all tickets are still locked by me
+        // check if all tickets are still locked by me and if tour date is not deleted
         cartTickets.stream().
                 filter(cartTicket -> (cartTicket.getTicket().getLockExpiresAt().
-                isBefore(LocalDateTime.now()) && !cartTicket.getTicket().
-                getUser().getId().equals(user.getId()))).
+                isBefore(LocalDateTime.now())
+                || !cartTicket.getTicket().getUser().getId().
+                        equals(user.getId())
+                || cartTicket.getTicket().getTourDate().getDeletedAt() != null)).
                 forEachOrdered(_item -> {
-                    throw new TicketPurchaseTimeExpiredException(
-                            CART_TICKETS_EXPIRED);
+                    throw new TicketPurchaseTimeExpiredException(_item.getId());
                 });
 
         double totalPrice = calculateTotalPriceForTickets(cartTickets);
 
         // create new order
         UserOrder order = new UserOrder(LocalDateTime.now(),
-                totalPrice, null);
+                totalPrice, request.getComments());
         user.addOrder(order);
 
         cartTickets.forEach(cartTicket -> {

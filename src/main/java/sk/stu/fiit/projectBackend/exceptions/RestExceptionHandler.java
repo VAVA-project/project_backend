@@ -24,14 +24,25 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({EmailTakenException.class, RecordNotFoundException.class,
-        IncorrectUsernameOrPasswordException.class, InvalidRangeException.class,
-        PermissionDeniedException.class, TicketIsPurchased.class,
-        CartIsEmptyException.class, TicketPurchaseTimeExpiredException.class})
+    @ExceptionHandler({
+        EmailTakenException.class,
+        RecordNotFoundException.class,
+        IncorrectUsernameOrPasswordException.class,
+        InvalidRangeException.class,
+        PermissionDeniedException.class,
+        TicketIsPurchased.class,
+        CartIsEmptyException.class,
+        TicketPurchaseTimeExpiredException.class,
+        CartIsEmptyException.class,
+        TicketNotFoundException.class,
+        TourDateNotFoundException.class,
+        TourOfferNotFoundException.class,
+        UserNotFoundException.class
+    })
     protected ResponseEntity<Object> handleExceptions(RuntimeException e) {
-        ApiException exception = new ApiException(HttpStatus.BAD_REQUEST, e);
-        System.out.println(e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception);
+        APIError response = new APIError(HttpStatus.BAD_REQUEST, e.
+                getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @Override
@@ -47,7 +58,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
 
-        return ResponseEntity.status(422).body(errors);
+        APIError response = new APIError(HttpStatus.BAD_REQUEST, errors);
+
+        return ResponseEntity.status(status).body(response);
     }
 
 }

@@ -16,8 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import static sk.stu.fiit.projectBackend.Other.Constants.TOUR_DATE_INVALID_DATES;
-import static sk.stu.fiit.projectBackend.Other.Constants.TOUR_DATE_NOT_FOUND;
-import static sk.stu.fiit.projectBackend.Other.Constants.TOUR_OFFER_NOT_FOUND;
 import sk.stu.fiit.projectBackend.Ticket.Ticket;
 import sk.stu.fiit.projectBackend.TourDate.dto.CreateTourDateRequest;
 import sk.stu.fiit.projectBackend.TourDate.dto.TourDateResponse;
@@ -27,7 +25,8 @@ import sk.stu.fiit.projectBackend.TourOffer.dto.DataPage;
 import sk.stu.fiit.projectBackend.User.AppUser;
 import sk.stu.fiit.projectBackend.Utils.AppUserUtils;
 import sk.stu.fiit.projectBackend.exceptions.InvalidRangeException;
-import sk.stu.fiit.projectBackend.exceptions.RecordNotFoundException;
+import sk.stu.fiit.projectBackend.exceptions.TourDateNotFoundException;
+import sk.stu.fiit.projectBackend.exceptions.TourOfferNotFoundException;
 
 /**
  *
@@ -51,12 +50,10 @@ public class TourDateService {
 
         TourOffer tourOffer = user.getTourOffers().stream().filter(e -> e.
                 getId().equals(id)).findFirst().orElseThrow(
-                () -> new RecordNotFoundException(String.format(
-                        TOUR_OFFER_NOT_FOUND, id)));
+                () -> new TourOfferNotFoundException(id));
 
         if (tourOffer.getDeletedAt() != null) {
-            throw new RecordNotFoundException(String.
-                    format(TOUR_OFFER_NOT_FOUND, id));
+            throw new TourOfferNotFoundException(id);
         }
 
         TourDate newTourDate = new TourDate(request.getStartDate(), request.
@@ -84,23 +81,19 @@ public class TourDateService {
 
         TourOffer tourOffer = user.getTourOffers().stream().filter(e -> e.
                 getId().equals(tourOfferId)).findFirst().orElseThrow(
-                () -> new RecordNotFoundException(String.format(
-                        TOUR_OFFER_NOT_FOUND, tourOfferId)));
+                () -> new TourOfferNotFoundException(tourOfferId));
 
         if (tourOffer.getDeletedAt() != null) {
-            throw new RecordNotFoundException(String.format(
-                    TOUR_OFFER_NOT_FOUND, tourOfferId));
+            throw new TourOfferNotFoundException(tourOfferId);
         }
 
         TourDate tourDate = tourOffer.getTourDates().stream().filter(e -> e.
                 getId().equals(
                         tourDateId)).findFirst().orElseThrow(
-                () -> new RecordNotFoundException(String.format(
-                        TOUR_DATE_NOT_FOUND, tourDateId)));
+                () -> new TourDateNotFoundException(tourDateId));
 
         if (tourDate.getDeletedAt() != null) {
-            throw new RecordNotFoundException(String.format(
-                    TOUR_DATE_NOT_FOUND, tourDateId));
+            throw new TourDateNotFoundException(tourDateId);
         }
 
         LocalDateTime testStartDate = request.getStartDate() != null ? request.
@@ -126,23 +119,19 @@ public class TourDateService {
 
         TourOffer tourOffer = user.getTourOffers().stream().filter(e -> e.
                 getId().equals(tourId)).findFirst().orElseThrow(
-                () -> new RecordNotFoundException(String.format(
-                        TOUR_OFFER_NOT_FOUND, tourId)));
+                () -> new TourOfferNotFoundException(tourId));
 
         if (tourOffer.getDeletedAt() != null) {
-            throw new RecordNotFoundException(String.format(
-                    TOUR_OFFER_NOT_FOUND, tourId));
+            throw new TourOfferNotFoundException(tourId);
         }
 
         TourDate tourDate = tourOffer.getTourDates().stream().filter(e -> e.
                 getId().equals(
                         dateId)).findFirst().orElseThrow(
-                () -> new RecordNotFoundException(String.format(
-                        TOUR_DATE_NOT_FOUND, dateId)));
+                () -> new TourDateNotFoundException(dateId));
 
         if (tourDate.getDeletedAt() != null) {
-            throw new RecordNotFoundException(String.format(
-                    TOUR_DATE_NOT_FOUND, dateId));
+            throw new TourDateNotFoundException(dateId);
         }
 
         tourDate.setDeletedAt(LocalDateTime.now());
@@ -156,8 +145,11 @@ public class TourDateService {
         Pageable pageable = PageRequest.of(page.getPageNumber(), page.
                 getPageSize(), sort);
 
-        return tourDateRepository.findByTourOfferIdAndDeletedAtIsNull(dateId,
-                pageable);
+        return tourDateRepository.
+                findByTourOfferIdAndDeletedAtIsNullAndStartDateGreaterThanEqual(
+                        dateId,
+                        LocalDateTime.now(),
+                        pageable);
     }
 
 }

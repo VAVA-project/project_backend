@@ -7,6 +7,7 @@ package sk.stu.fiit.projectBackend.User;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +31,7 @@ import sk.stu.fiit.projectBackend.Utils.AppUserUtils;
 import sk.stu.fiit.projectBackend.Utils.JWTUtil;
 import sk.stu.fiit.projectBackend.exceptions.EmailTakenException;
 import sk.stu.fiit.projectBackend.exceptions.IncorrectUsernameOrPasswordException;
+import sk.stu.fiit.projectBackend.exceptions.UserNotFoundException;
 
 /**
  *
@@ -58,7 +60,7 @@ public class AppUserService implements UserDetailsService {
                 isPresent();
 
         if (userExists) {
-            throw new EmailTakenException();
+            throw new EmailTakenException(request.getEmail());
         }
 
         String hashedPassword = bCryptPasswordEncoder.encode(request.getPassword());
@@ -128,6 +130,13 @@ public class AppUserService implements UserDetailsService {
         }
         
         appUserRepository.save(user);
+        
+        return user;
+    }
+    
+    public AppUser getUser(UUID userId) {
+        AppUser user = appUserRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException(userId));
         
         return user;
     }

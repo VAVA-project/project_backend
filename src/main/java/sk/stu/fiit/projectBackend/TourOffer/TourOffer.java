@@ -86,13 +86,17 @@ public class TourOffer implements Serializable {
             cascade = CascadeType.ALL,
             mappedBy = "tourOffer"
     )
+    @JsonIgnore
     private List<TourDate> tourDates = new ArrayList<>(0);
     
     @OneToMany(
             cascade = CascadeType.ALL,
             mappedBy = "tourOffer"
     )
+    @JsonIgnore
     private List<Rating> ratings = new ArrayList<>(0);
+    
+    private transient double averageRating;
 
     public TourOffer(String startPlace, String destinationPlace,
             String description, double pricePerPerson) {

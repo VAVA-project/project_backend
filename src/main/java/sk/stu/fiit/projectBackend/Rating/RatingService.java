@@ -10,13 +10,12 @@ import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import sk.stu.fiit.projectBackend.Other.Constants;
 import sk.stu.fiit.projectBackend.Rating.dto.RatingRequest;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 import sk.stu.fiit.projectBackend.TourOffer.TourOfferRepository;
 import sk.stu.fiit.projectBackend.User.AppUser;
 import sk.stu.fiit.projectBackend.Utils.AppUserUtils;
-import sk.stu.fiit.projectBackend.exceptions.RecordNotFoundException;
+import sk.stu.fiit.projectBackend.exceptions.TourOfferNotFoundException;
 
 /**
  *
@@ -34,8 +33,11 @@ public class RatingService {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
         
         TourOffer tourOffer = tourOfferRepository.findById(tourOfferId).
-                orElseThrow(() -> new RecordNotFoundException(
-                Constants.TOUR_OFFER_NOT_FOUND));
+                orElseThrow(() -> new TourOfferNotFoundException(tourOfferId));
+        
+        if(tourOffer.getDeletedAt() != null) {
+            throw new TourOfferNotFoundException(tourOfferId);
+        }
 
         HttpStatus returnStatus = HttpStatus.CREATED;
 

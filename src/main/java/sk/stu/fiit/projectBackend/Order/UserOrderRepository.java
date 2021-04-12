@@ -14,6 +14,6 @@ import org.springframework.stereotype.Repository;
  * @author Adam Bublavý
  */
 @Repository
-public interface OrderRepository extends JpaRepository<UserOrder, UUID> {
+public interface UserOrderRepository extends JpaRepository<UserOrder, UUID> {
     
 }

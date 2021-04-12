@@ -3,10 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sk.stu.fiit.projectBackend.User.dto;
+package sk.stu.fiit.projectBackend.Cart.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import sk.stu.fiit.projectBackend.validators.NullOrNotBlank;
 
 /**
  *
@@ -14,8 +16,10 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class RegisterResponse {
+@NoArgsConstructor
+public class CheckoutRequest {
     
-    private String jwtToken;
-
+    @NullOrNotBlank
+    private String comments;
+    
 }

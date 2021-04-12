@@ -5,20 +5,17 @@
  */
 package sk.stu.fiit.projectBackend.exceptions;
 
-import sk.stu.fiit.projectBackend.Other.Constants;
+import java.util.UUID;
+import static sk.stu.fiit.projectBackend.Other.Constants.USER_WITH_ID_NOT_FOUND;
 
 /**
  *
  * @author Adam Bublavý
  */
-public class CartIsEmptyException extends RuntimeException {
-
-    public CartIsEmptyException() {
-        super(Constants.CART_IS_EMPTY);
-    }
-
-    public CartIsEmptyException(String message) {
-        super(message);
+public class UserNotFoundException extends RecordNotFoundException {
+    
+    public UserNotFoundException(UUID id) {
+        super(String.format(USER_WITH_ID_NOT_FOUND, id));
     }
     
 }
