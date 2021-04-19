@@ -15,6 +15,7 @@ import sk.stu.fiit.projectBackend.Rating.RatingRepository;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 import sk.stu.fiit.projectBackend.TourOffer.TourOfferRepository;
 import sk.stu.fiit.projectBackend.TourOffer.dto.DataPage;
+import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferResponse;
 
 /**
  *
@@ -27,7 +28,7 @@ public class SearchService {
     private final TourOfferRepository tourOfferRepository;
     private final RatingRepository ratingRepository;
     
-    public Page<TourOffer> searchTourOffers(String query, DataPage page) {
+    public Page<TourOfferResponse> searchTourOffers(String query, DataPage page) {
         Sort sort = Sort.by(page.getSortDirection(), page.getSortBy());
         Pageable pageable = PageRequest.of(page.getPageNumber(), page.
                 getPageSize(), sort);
@@ -42,7 +43,9 @@ public class SearchService {
             e.setAverageRating(averageRating);
         });
         
-        return response;
+        Page<TourOfferResponse> transformedResponse = response.map(TourOfferResponse::new);
+        
+        return transformedResponse;
     }
 
 }
