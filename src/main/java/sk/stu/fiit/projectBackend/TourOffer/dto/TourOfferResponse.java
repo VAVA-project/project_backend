@@ -26,6 +26,7 @@ public class TourOfferResponse {
     private String description;
     
     private double pricePerPerson;
+    private double averageRating = -1;
     
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

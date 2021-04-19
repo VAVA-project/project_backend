@@ -37,13 +37,12 @@ public class SearchService {
                 query, query,
                 pageable);
         
-        response.stream().forEach(e -> {
+        Page<TourOfferResponse> transformedResponse = response.map(TourOfferResponse::new);
+        transformedResponse.stream().forEach(e -> {
             double averageRating = ratingRepository.calculateAverageRating(
-                    e.getId()).orElse(0.0);
+                    e.getId()).orElse(-1.0);
             e.setAverageRating(averageRating);
         });
-        
-        Page<TourOfferResponse> transformedResponse = response.map(TourOfferResponse::new);
         
         return transformedResponse;
     }
