@@ -19,9 +19,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import static sk.stu.fiit.projectBackend.Other.Constants.USER_NOT_FOUND;
+import sk.stu.fiit.projectBackend.Rating.RatingRepository;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 import sk.stu.fiit.projectBackend.TourOffer.TourOfferRepository;
 import sk.stu.fiit.projectBackend.TourOffer.dto.DataPage;
+import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferResponse;
 import sk.stu.fiit.projectBackend.User.dto.LoginRequest;
 import sk.stu.fiit.projectBackend.User.dto.LoginResponse;
 import sk.stu.fiit.projectBackend.User.dto.RegisterRequest;
@@ -43,6 +45,7 @@ public class AppUserService implements UserDetailsService {
 
     private final AppUserRepository appUserRepository;
     private final TourOfferRepository tourOfferRepository;
+    private final RatingRepository ratingRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JWTUtil jwtUtil;
     private final AppUserUtils appUserUtils;
@@ -54,7 +57,7 @@ public class AppUserService implements UserDetailsService {
                 () -> new UsernameNotFoundException(String.
                         format(USER_NOT_FOUND, email)));
     }
-    
+
     public RegisterResponse register(RegisterRequest request) {
         boolean userExists = appUserRepository.findByEmail(request.getEmail()).
                 isPresent();
@@ -63,92 +66,108 @@ public class AppUserService implements UserDetailsService {
             throw new EmailTakenException(request.getEmail());
         }
 
-        String hashedPassword = bCryptPasswordEncoder.encode(request.getPassword());
+        String hashedPassword = bCryptPasswordEncoder.encode(request.
+                getPassword());
 
         request.setPassword(hashedPassword);
-        
+
         AppUser user = new AppUser(request.getEmail(), hashedPassword,
-                AppUserTypes.valueOf(request.getType()), request.getFirstName(), request.getLastName(),
+                AppUserTypes.valueOf(request.getType()), request.getFirstName(),
+                request.getLastName(),
                 request.getDateOfBirth(), request.getPhoto());
 
         appUserRepository.save(user);
-        
+
         String jwtToken = jwtUtil.generateToken(user);
-        
+
         return new RegisterResponse(jwtToken);
     }
-    
+
     public LoginResponse login(LoginRequest request) {
         Optional<AppUser> userOptional = appUserRepository.findByEmail(
                 request.getEmail());
-        
-        if(!userOptional.isPresent()) {
+
+        if (!userOptional.isPresent()) {
             throw new IncorrectUsernameOrPasswordException();
         }
-        
+
         AppUser user = userOptional.get();
-        
-        if(!bCryptPasswordEncoder.matches(request.getPassword(), user.getPassword())) {
+
+        if (!bCryptPasswordEncoder.matches(request.getPassword(), user.
+                getPassword())) {
             throw new IncorrectUsernameOrPasswordException();
-            
+
         }
-        
+
         String jwtToken = jwtUtil.generateToken(user);
-        
+
         return new LoginResponse(jwtToken, user);
     }
-    
+
     public AppUser me() {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
-        
+
         return user;
     }
-    
+
     public AppUser updateUser(UpdateRequest request) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
         int hashBeforeUpdate = user.hashCode();
-        
-        if(request.getPassword() != null) {
-            String hashedPassword = bCryptPasswordEncoder.encode(request.getPassword());
+
+        if (request.getPassword() != null) {
+            String hashedPassword = bCryptPasswordEncoder.encode(request.
+                    getPassword());
             user.setPassword(hashedPassword);
         }
-        if(request.getFirstName() != null) {
+        if (request.getFirstName() != null) {
             user.setFirstName(request.getFirstName());
         }
-        if(request.getLastName() != null) {
+        if (request.getLastName() != null) {
             user.setLastName(request.getLastName());
         }
-        if(request.getDateOfBirth() != null) {
+        if (request.getDateOfBirth() != null) {
             user.setDateOfBirth(request.getDateOfBirth());
         }
-        if(request.getPhoto() != null) {
+        if (request.getPhoto() != null) {
             user.setPhoto(request.getPhoto());
         }
-        
-        if(hashBeforeUpdate != user.hashCode()) {
+
+        if (hashBeforeUpdate != user.hashCode()) {
             user.setUpdatedAt(LocalDateTime.now());
         }
-        
+
         appUserRepository.save(user);
-        
+
         return user;
     }
-    
+
     public AppUser getUser(UUID userId) {
         AppUser user = appUserRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(userId));
-        
+
         return user;
     }
-    
-    public Page<TourOffer> getUsersTourOffers(DataPage page) {
+
+    public Page<TourOfferResponse> getUsersTourOffers(DataPage page) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
-        
+
         Sort sort = Sort.by(page.getSortDirection(), page.getSortBy());
         Pageable pageable = PageRequest.of(page.getPageNumber(), page.
                 getPageSize(), sort);
 
-        return tourOfferRepository.findAllByUserId(user.getId(), pageable);
+        Page<TourOffer> userOffers = tourOfferRepository.findAllByUserId(user.
+                getId(), pageable);
+
+        Page<TourOfferResponse> transformedUserOffers = userOffers.map(
+                TourOfferResponse::new);
+
+        transformedUserOffers.stream().forEach(e -> {
+            double averageRating = ratingRepository.calculateAverageRating(
+                    e.getId()).orElse(-1.0);
+            e.setAverageRating(averageRating);
+        });
+        
+        return transformedUserOffers;
     }
-    
+
 }

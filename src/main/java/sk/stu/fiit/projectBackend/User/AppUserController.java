@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 import sk.stu.fiit.projectBackend.TourOffer.dto.DataPage;
+import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferResponse;
 import sk.stu.fiit.projectBackend.User.dto.LoginRequest;
 import sk.stu.fiit.projectBackend.User.dto.LoginResponse;
 import sk.stu.fiit.projectBackend.User.dto.RegisterRequest;
@@ -76,7 +76,7 @@ public class AppUserController {
     }
 
     @GetMapping(path = "/users/tours/")
-    public ResponseEntity<Page<TourOffer>> getUsersTourOffers(
+    public ResponseEntity<Page<TourOfferResponse>> getUsersTourOffers(
             @Valid DataPage page) {
         return new ResponseEntity<>(appUserService.getUsersTourOffers(page),
                 HttpStatus.OK);
