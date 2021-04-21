@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import sk.stu.fiit.projectBackend.Rating.RatingRepository;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 import sk.stu.fiit.projectBackend.TourOffer.TourOfferRepository;
-import sk.stu.fiit.projectBackend.TourOffer.dto.DataPage;
 import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferResponse;
+import sk.stu.fiit.projectBackend.TourOffer.dto.TourOffersDataPage;
 
 /**
  *
@@ -28,7 +28,7 @@ public class SearchService {
     private final TourOfferRepository tourOfferRepository;
     private final RatingRepository ratingRepository;
     
-    public Page<TourOfferResponse> searchTourOffers(String query, DataPage page) {
+    public Page<TourOfferResponse> searchTourOffers(String query, TourOffersDataPage page) {
         Sort sort = Sort.by(page.getSortDirection(), page.getSortBy());
         Pageable pageable = PageRequest.of(page.getPageNumber(), page.
                 getPageSize(), sort);

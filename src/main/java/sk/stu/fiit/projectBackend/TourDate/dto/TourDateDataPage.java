@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sk.stu.fiit.projectBackend.TourOffer.dto;
+package sk.stu.fiit.projectBackend.TourDate.dto;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -18,8 +18,7 @@ import sk.stu.fiit.projectBackend.validators.NullOrNotBlank;
  * @author Adam Bublavý
  */
 @Data
-public class DataPage {
-
+public class TourDateDataPage {
     @Min(0)
     private int pageNumber = 0;
 
@@ -31,7 +30,6 @@ public class DataPage {
     private Sort.Direction sortDirection = Sort.Direction.DESC;
 
     @NullOrNotBlank
-    @In(allowedValues = {"createdAt", "updatedAt"})
+    @In(allowedValues = {"createdAt", "updatedAt", "startDate", "endDate"})
     private String sortBy = "createdAt";
-
 }

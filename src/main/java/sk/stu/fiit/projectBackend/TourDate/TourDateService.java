@@ -18,10 +18,10 @@ import org.springframework.stereotype.Service;
 import static sk.stu.fiit.projectBackend.Other.Constants.TOUR_DATE_INVALID_DATES;
 import sk.stu.fiit.projectBackend.Ticket.Ticket;
 import sk.stu.fiit.projectBackend.TourDate.dto.CreateTourDateRequest;
+import sk.stu.fiit.projectBackend.TourDate.dto.TourDateDataPage;
 import sk.stu.fiit.projectBackend.TourDate.dto.TourDateResponse;
 import sk.stu.fiit.projectBackend.TourDate.dto.UpdateTourDateRequest;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
-import sk.stu.fiit.projectBackend.TourOffer.dto.DataPage;
 import sk.stu.fiit.projectBackend.User.AppUser;
 import sk.stu.fiit.projectBackend.Utils.AppUserUtils;
 import sk.stu.fiit.projectBackend.exceptions.InvalidRangeException;
@@ -140,7 +140,7 @@ public class TourDateService {
         return HttpStatus.NO_CONTENT;
     }
 
-    public Page<TourDate> getTourDates(UUID dateId, DataPage page) {
+    public Page<TourDate> getTourDates(UUID dateId, TourDateDataPage page) {
         Sort sort = Sort.by(page.getSortDirection(), page.getSortBy());
         Pageable pageable = PageRequest.of(page.getPageNumber(), page.
                 getPageSize(), sort);

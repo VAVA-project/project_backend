@@ -10,6 +10,7 @@ import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -49,7 +50,20 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers,
             HttpStatus status, WebRequest request) {
+        APIError response = this.formatErrors(ex);
 
+        return ResponseEntity.status(status).body(response);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleBindException(BindException ex,
+            HttpHeaders headers, HttpStatus status, WebRequest request) {
+        APIError response = this.formatErrors(ex);
+
+        return ResponseEntity.status(status).body(response);
+    }
+    
+    private APIError formatErrors(BindException ex) {
         Map<String, String> errors = new HashMap<>();
 
         ex.getBindingResult().getAllErrors().forEach((error) -> {
@@ -58,9 +72,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
 
-        APIError response = new APIError(HttpStatus.BAD_REQUEST, errors);
-
-        return ResponseEntity.status(status).body(response);
+        return new APIError(HttpStatus.BAD_REQUEST, errors);
     }
+    
+    
 
 }

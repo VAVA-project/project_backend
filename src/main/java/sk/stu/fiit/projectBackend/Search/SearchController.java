@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import sk.stu.fiit.projectBackend.TourOffer.dto.DataPage;
 import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferResponse;
+import sk.stu.fiit.projectBackend.TourOffer.dto.TourOffersDataPage;
 
 /**
  *
@@ -30,7 +30,7 @@ public class SearchController {
     @GetMapping(path = "/search/")
     public ResponseEntity<Page<TourOfferResponse>> searchTourOffers(
             @RequestParam("q") String query,
-            @Valid DataPage page
+            @Valid TourOffersDataPage page
     ) {
         return ResponseEntity.ok(searchService.searchTourOffers(query, page));
     }
