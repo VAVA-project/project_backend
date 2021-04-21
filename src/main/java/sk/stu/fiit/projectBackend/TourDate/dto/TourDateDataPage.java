@@ -18,7 +18,7 @@ import sk.stu.fiit.projectBackend.validators.NullOrNotBlank;
  * @author Adam Bublavý
  */
 @Data
-public class TourDataPage {
+public class TourDateDataPage {
     @Min(0)
     private int pageNumber = 0;
 

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sk.stu.fiit.projectBackend.TourDate.dto.CreateTourDateRequest;
-import sk.stu.fiit.projectBackend.TourDate.dto.TourDataPage;
+import sk.stu.fiit.projectBackend.TourDate.dto.TourDateDataPage;
 import sk.stu.fiit.projectBackend.TourDate.dto.TourDateResponse;
 import sk.stu.fiit.projectBackend.TourDate.dto.UpdateTourDateRequest;
 
@@ -67,7 +67,7 @@ public class TourDateController {
     @GetMapping(path = "/dates/")
     public ResponseEntity<Page<TourDate>> getTourDates(
             @PathVariable("tourOfferId") UUID tourOfferId,
-            @Valid TourDataPage page
+            @Valid TourDateDataPage page
     ) {
         return ResponseEntity.ok(tourDateService.getTourDates(tourOfferId, page));
     }

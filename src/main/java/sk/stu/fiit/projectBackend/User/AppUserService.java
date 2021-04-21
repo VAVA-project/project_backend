@@ -22,8 +22,8 @@ import static sk.stu.fiit.projectBackend.Other.Constants.USER_NOT_FOUND;
 import sk.stu.fiit.projectBackend.Rating.RatingRepository;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 import sk.stu.fiit.projectBackend.TourOffer.TourOfferRepository;
-import sk.stu.fiit.projectBackend.TourOffer.dto.DataPage;
 import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferResponse;
+import sk.stu.fiit.projectBackend.TourOffer.dto.TourOffersDataPage;
 import sk.stu.fiit.projectBackend.User.dto.LoginRequest;
 import sk.stu.fiit.projectBackend.User.dto.LoginResponse;
 import sk.stu.fiit.projectBackend.User.dto.RegisterRequest;
@@ -148,7 +148,7 @@ public class AppUserService implements UserDetailsService {
         return user;
     }
 
-    public Page<TourOfferResponse> getUsersTourOffers(DataPage page) {
+    public Page<TourOfferResponse> getUsersTourOffers(TourOffersDataPage page) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
         Sort sort = Sort.by(page.getSortDirection(), page.getSortBy());
