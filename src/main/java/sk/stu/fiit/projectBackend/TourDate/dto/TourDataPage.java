@@ -3,12 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sk.stu.fiit.projectBackend.TourOffer.dto;
+package sk.stu.fiit.projectBackend.TourDate.dto;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import lombok.Data;
 import org.springframework.data.domain.Sort;
+import sk.stu.fiit.projectBackend.validators.In;
+import sk.stu.fiit.projectBackend.validators.InEnum;
 import sk.stu.fiit.projectBackend.validators.NullOrNotBlank;
 
 /**
@@ -16,8 +18,7 @@ import sk.stu.fiit.projectBackend.validators.NullOrNotBlank;
  * @author Adam Bublavý
  */
 @Data
-public class DataPage {
-
+public class TourDataPage {
     @Min(0)
     private int pageNumber = 0;
 
@@ -25,10 +26,10 @@ public class DataPage {
     @Max(20)
     private int pageSize = 10;
 
+    @InEnum(enumClass = Sort.Direction.class)
     private Sort.Direction sortDirection = Sort.Direction.DESC;
 
     @NullOrNotBlank
-    //@In(allowedValues = {"id", "createdAt", "updatedAt", "deletedAt"})
+    @In(allowedValues = {"createdAt", "updatedAt", "startDate", "endDate"})
     private String sortBy = "createdAt";
-
 }
