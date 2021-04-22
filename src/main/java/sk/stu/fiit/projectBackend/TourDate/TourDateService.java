@@ -131,7 +131,7 @@ public class TourDateService {
                 () -> new TourDateNotFoundException(dateId));
 
         if (tourDate.getDeletedAt() != null) {
-            throw new TourDateNotFoundException(dateId);
+            return HttpStatus.NOT_FOUND;
         }
 
         tourDate.setDeletedAt(LocalDateTime.now());
