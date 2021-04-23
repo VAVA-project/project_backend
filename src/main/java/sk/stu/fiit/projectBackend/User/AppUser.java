@@ -186,6 +186,7 @@ public class AppUser implements UserDetails {
 
         tickets.add(ticket);
         ticket.setUser(this);
+        ticket.setUpdatedAt(LocalDateTime.now());
     }
 
     public void removeTicket(Ticket ticket) {
@@ -194,6 +195,7 @@ public class AppUser implements UserDetails {
         }
 
         ticket.setLockExpiresAt(null);
+        ticket.setUpdatedAt(LocalDateTime.now());
         tickets.remove(ticket);
         ticket.setUser(null);
     }

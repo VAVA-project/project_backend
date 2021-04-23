@@ -8,13 +8,16 @@ package sk.stu.fiit.projectBackend.Cart;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import sk.stu.fiit.projectBackend.Cart.dto.CartResponse;
 import sk.stu.fiit.projectBackend.Cart.dto.CheckoutRequest;
 import sk.stu.fiit.projectBackend.Order.OrderTicket;
 import sk.stu.fiit.projectBackend.Order.UserOrder;
+import sk.stu.fiit.projectBackend.Order.UserOrderRepository;
 import static sk.stu.fiit.projectBackend.Other.Constants.TICKET_ALREADY_PURCHASED;
 import sk.stu.fiit.projectBackend.Ticket.Ticket;
 import sk.stu.fiit.projectBackend.Ticket.TicketRepository;
@@ -25,7 +28,6 @@ import sk.stu.fiit.projectBackend.exceptions.CartIsEmptyException;
 import sk.stu.fiit.projectBackend.exceptions.TicketIsPurchased;
 import sk.stu.fiit.projectBackend.exceptions.TicketNotFoundException;
 import sk.stu.fiit.projectBackend.exceptions.TicketPurchaseTimeExpiredException;
-import sk.stu.fiit.projectBackend.Order.UserOrderRepository;
 
 /**
  *
@@ -59,12 +61,16 @@ public class CartItemService {
 
         // WARNING 
         if (ticket.getUser() != null) {
+            CartTicket cartTicket = ticket.getCartTicket();
+
+            ticket.getUser().removeCartTicket(cartTicket);
+            cartTicketRepository.delete(cartTicket);
+
             ticket.getUser().removeTicket(ticket);
         }
 
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
-        ticket.setUpdatedAt(LocalDateTime.now());
         user.addTicket(ticket);
         ticket.setLockExpiresAt(LocalDateTime.now().plusMinutes(
                 TICKET_RESERVE_TIME_IN_MINUTES));
@@ -96,6 +102,10 @@ public class CartItemService {
 
         CartTicket cartTicket = ticket.getCartTicket();
 
+        if (cartTicket == null) {
+            return false;
+        }
+
         user.removeTicket(ticket);
         user.removeCartTicket(cartTicket);
         cartTicketRepository.delete(cartTicket);
@@ -113,15 +123,19 @@ public class CartItemService {
         }
 
         // check if all tickets are still locked by me and if tour date is not deleted
-        cartTickets.stream().
+        List<CartTicket> expiredTickets = cartTickets.stream().
                 filter(cartTicket -> (cartTicket.getTicket().getLockExpiresAt().
                 isBefore(LocalDateTime.now())
                 || !cartTicket.getTicket().getUser().getId().
                         equals(user.getId())
                 || cartTicket.getTicket().getTourDate().getDeletedAt() != null)).
-                forEachOrdered(_item -> {
-                    throw new TicketPurchaseTimeExpiredException(_item.getId());
-                });
+                collect(Collectors.toList());
+
+        if (!expiredTickets.isEmpty()) {
+            throw new TicketPurchaseTimeExpiredException(
+                    expiredTickets.stream().map(e -> e.getTicket().getId()).collect(
+                            Collectors.toList()));
+        }
 
         double totalPrice = calculateTotalPriceForTickets(cartTickets);
 
@@ -144,6 +158,21 @@ public class CartItemService {
 
         return order;
     }
+    
+    @Transactional
+    public HttpStatus clearCart() {
+        AppUser user = this.appUserUtils.getCurrentlyLoggedUser();
+        
+        List<CartTicket> cartTickets = user.getCartTickets();
+        
+        cartTickets.forEach(e -> {
+            user.removeTicket(e.getTicket());
+        });
+        
+        cartTickets.clear();
+        
+        return HttpStatus.NO_CONTENT;
+    }
 
     private double calculateTotalPriceForTickets(List<CartTicket> cartTickets) {
         double totalPrice = 0;
@@ -155,5 +184,5 @@ public class CartItemService {
 
         return totalPrice;
     }
-
+    
 }

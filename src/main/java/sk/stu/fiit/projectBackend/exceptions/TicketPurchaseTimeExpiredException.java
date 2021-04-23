@@ -5,6 +5,7 @@
  */
 package sk.stu.fiit.projectBackend.exceptions;
 
+import java.util.List;
 import java.util.UUID;
 import static sk.stu.fiit.projectBackend.Other.Constants.CART_TICKETS_EXPIRED;
 
@@ -14,6 +15,8 @@ import static sk.stu.fiit.projectBackend.Other.Constants.CART_TICKETS_EXPIRED;
  */
 public class TicketPurchaseTimeExpiredException extends RuntimeException {
 
+    private List<UUID> expiredTickets;
+    
     public TicketPurchaseTimeExpiredException(String message) {
         super(message);
     }
@@ -22,4 +25,11 @@ public class TicketPurchaseTimeExpiredException extends RuntimeException {
         super(String.format(CART_TICKETS_EXPIRED, id));
     }
     
+    public TicketPurchaseTimeExpiredException(List<UUID> expiredTickets) {
+        this.expiredTickets = expiredTickets;
+    }
+
+    public List<UUID> getExpiredTickets() {
+        return expiredTickets;
+    }
 }
