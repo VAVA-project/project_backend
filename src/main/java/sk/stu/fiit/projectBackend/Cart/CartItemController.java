@@ -54,4 +54,9 @@ public class CartItemController {
             @Valid @RequestBody CheckoutRequest request) {
         return ResponseEntity.ok(cartItemService.checkout(request));
     }
+    
+    @DeleteMapping(path = "/")
+    public ResponseEntity<?> clearCart() {
+        return ResponseEntity.status(cartItemService.clearCart()).build();
+    }
 }

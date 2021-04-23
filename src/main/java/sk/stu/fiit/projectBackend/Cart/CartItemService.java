@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import sk.stu.fiit.projectBackend.Cart.dto.CartResponse;
 import sk.stu.fiit.projectBackend.Cart.dto.CheckoutRequest;
@@ -158,6 +159,21 @@ public class CartItemService {
 
         return order;
     }
+    
+    @Transactional
+    public HttpStatus clearCart() {
+        AppUser user = this.appUserUtils.getCurrentlyLoggedUser();
+        
+        List<CartTicket> cartTickets = user.getCartTickets();
+        
+        cartTickets.forEach(e -> {
+            user.removeTicket(e.getTicket());
+        });
+        
+        cartTickets.clear();
+        
+        return HttpStatus.NO_CONTENT;
+    }
 
     private double calculateTotalPriceForTickets(List<CartTicket> cartTickets) {
         double totalPrice = 0;
@@ -169,5 +185,5 @@ public class CartItemService {
 
         return totalPrice;
     }
-
+    
 }
