@@ -41,8 +41,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         UserNotFoundException.class
     })
     protected ResponseEntity<Object> handleExceptions(RuntimeException e) {
-        APIError response = new APIError(HttpStatus.BAD_REQUEST, e.
-                getMessage());
+        Object errorMessage = (e instanceof TicketPurchaseTimeExpiredException) ? ((TicketPurchaseTimeExpiredException) e).
+                getExpiredTickets() : e.getMessage();
+
+        APIError response = new APIError(HttpStatus.BAD_REQUEST, errorMessage);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
@@ -62,7 +64,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
         return ResponseEntity.status(status).body(response);
     }
-    
+
     private APIError formatErrors(BindException ex) {
         Map<String, String> errors = new HashMap<>();
 
@@ -74,7 +76,5 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new APIError(HttpStatus.BAD_REQUEST, errors);
     }
-    
-    
 
 }
