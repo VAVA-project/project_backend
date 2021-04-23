@@ -133,7 +133,7 @@ public class CartItemService {
 
         if (!expiredTickets.isEmpty()) {
             throw new TicketPurchaseTimeExpiredException(
-                    expiredTickets.stream().map(e -> e.getId()).collect(
+                    expiredTickets.stream().map(e -> e.getTicket().getId()).collect(
                             Collectors.toList()));
         }
 
