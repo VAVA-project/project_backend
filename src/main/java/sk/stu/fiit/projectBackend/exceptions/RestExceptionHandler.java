@@ -6,7 +6,9 @@
 package sk.stu.fiit.projectBackend.exceptions;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +35,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         PermissionDeniedException.class,
         TicketIsPurchased.class,
         CartIsEmptyException.class,
-        TicketPurchaseTimeExpiredException.class,
         CartIsEmptyException.class,
         TicketNotFoundException.class,
         TourDateNotFoundException.class,
@@ -41,10 +42,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         UserNotFoundException.class
     })
     protected ResponseEntity<Object> handleExceptions(RuntimeException e) {
-        Object errorMessage = (e instanceof TicketPurchaseTimeExpiredException) ? ((TicketPurchaseTimeExpiredException) e).
-                getExpiredTickets() : e.getMessage();
-
-        APIError response = new APIError(HttpStatus.BAD_REQUEST, errorMessage);
+        APIError response = new APIError(HttpStatus.BAD_REQUEST, e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+    
+    @ExceptionHandler({TicketPurchaseTimeExpiredException.class})
+    protected ResponseEntity<Object> handleTicketsExpiredException(TicketPurchaseTimeExpiredException e) {
+        Map<String, List<UUID>> errors = new HashMap<>();
+        errors.put("ticket", e.getExpiredTickets());
+        
+        APIError response = new APIError(HttpStatus.BAD_REQUEST, errors);
+        
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 

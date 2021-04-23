@@ -131,7 +131,6 @@ public class CartItemService {
                 || cartTicket.getTicket().getTourDate().getDeletedAt() != null)).
                 collect(Collectors.toList());
 
-        // remaster
         if (!expiredTickets.isEmpty()) {
             throw new TicketPurchaseTimeExpiredException(
                     expiredTickets.stream().map(e -> e.getId()).collect(
