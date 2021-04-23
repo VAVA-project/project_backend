@@ -23,13 +23,14 @@ public class TourDateResponse {
     private UUID tourOfferId;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private Integer numberOfSoldTickets;
     private int numberOfTickets;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
-    public TourDateResponse(TourDate tourDate, UUID tourOfferId) {
+    public TourDateResponse(TourDate tourDate) {
         this.id = tourDate.getId();
-        this.tourOfferId = tourOfferId;
+        this.tourOfferId = tourDate.getTourOffer().getId();
         this.startDate = tourDate.getStartDate();
         this.endDate = tourDate.getEndDate();
         this.numberOfTickets = tourDate.getTickets().size();

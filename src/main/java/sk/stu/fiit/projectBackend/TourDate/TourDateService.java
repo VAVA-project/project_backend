@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import static sk.stu.fiit.projectBackend.Other.Constants.TOUR_DATE_INVALID_DATES;
 import sk.stu.fiit.projectBackend.Ticket.Ticket;
+import sk.stu.fiit.projectBackend.Ticket.TicketRepository;
 import sk.stu.fiit.projectBackend.TourDate.dto.CreateTourDateRequest;
 import sk.stu.fiit.projectBackend.TourDate.dto.TourDateDataPage;
 import sk.stu.fiit.projectBackend.TourDate.dto.TourDateResponse;
@@ -37,6 +38,7 @@ import sk.stu.fiit.projectBackend.exceptions.TourOfferNotFoundException;
 public class TourDateService {
 
     private final TourDateRepository tourDateRepository;
+    private final TicketRepository ticketRepository;
     private final AppUserUtils appUserUtils;
 
     @Transactional
@@ -57,7 +59,7 @@ public class TourDateService {
         }
 
         TourDate newTourDate = new TourDate(request.getStartDate(), request.
-                getEndDate());
+                getEndDate(), request.getNumberOfTickets());
 
         tourOffer.addTourDate(newTourDate);
 
@@ -67,7 +69,7 @@ public class TourDateService {
 
         newTourDate = tourDateRepository.save(newTourDate);
 
-        return new TourDateResponse(newTourDate, id);
+        return new TourDateResponse(newTourDate);
     }
 
     public TourDateResponse updateTourDate(UUID tourOfferId, UUID tourDateId,
@@ -111,7 +113,7 @@ public class TourDateService {
 
         tourDate = tourDateRepository.save(tourDate);
 
-        return new TourDateResponse(tourDate, tourOfferId);
+        return new TourDateResponse(tourDate);
     }
 
     public HttpStatus deleteTourDate(UUID tourId, UUID dateId) {
@@ -140,16 +142,29 @@ public class TourDateService {
         return HttpStatus.NO_CONTENT;
     }
 
-    public Page<TourDate> getTourDates(UUID dateId, TourDateDataPage page) {
+    public Page<TourDateResponse> getTourDates(UUID dateId,
+            TourDateDataPage page) {
         Sort sort = Sort.by(page.getSortDirection(), page.getSortBy());
         Pageable pageable = PageRequest.of(page.getPageNumber(), page.
                 getPageSize(), sort);
 
-        return tourDateRepository.
+        Page<TourDate> response = tourDateRepository.
                 findByTourOfferIdAndDeletedAtIsNullAndStartDateGreaterThanEqual(
                         dateId,
                         LocalDateTime.now(),
                         pageable);
+
+        Page<TourDateResponse> transformedResponse = response.map(
+                TourDateResponse::new);
+        
+        transformedResponse.stream().forEach(e -> {
+            int numberOfSoldTickets = this.ticketRepository.countSoldTickets(
+                    e.getId()).get();
+            
+            e.setNumberOfSoldTickets(numberOfSoldTickets);
+        });
+        
+        return transformedResponse;
     }
 
 }

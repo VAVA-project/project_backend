@@ -54,6 +54,9 @@ public class TourDate implements Serializable {
 
     @Column(nullable = false)
     private LocalDateTime endDate;
+    
+    @Column(nullable = false)
+    private int numberOfTickets;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -81,9 +84,10 @@ public class TourDate implements Serializable {
     @JsonIgnore
     private List<Ticket> tickets = new ArrayList<>(0);
 
-    public TourDate(LocalDateTime startDate, LocalDateTime endDate) {
+    public TourDate(LocalDateTime startDate, LocalDateTime endDate, int numberOfTickets) {
         this.startDate = startDate;
         this.endDate = endDate;
+        this.numberOfTickets = numberOfTickets;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }

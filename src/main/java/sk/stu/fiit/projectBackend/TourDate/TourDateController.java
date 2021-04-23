@@ -65,7 +65,7 @@ public class TourDateController {
     }
     
     @GetMapping(path = "/dates/")
-    public ResponseEntity<Page<TourDate>> getTourDates(
+    public ResponseEntity<Page<TourDateResponse>> getTourDates(
             @PathVariable("tourOfferId") UUID tourOfferId,
             @Valid TourDateDataPage page
     ) {
