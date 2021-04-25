@@ -23,7 +23,6 @@ import sk.stu.fiit.projectBackend.Rating.RatingService;
 import sk.stu.fiit.projectBackend.Rating.dto.RatingResponse;
 import sk.stu.fiit.projectBackend.TourDate.TourDate;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
-import sk.stu.fiit.projectBackend.TourOffer.dto.DataPage;
 import sk.stu.fiit.projectBackend.User.AppUser;
 import sk.stu.fiit.projectBackend.Utils.AppUserUtils;
 
@@ -38,7 +37,7 @@ public class UserOrderService {
     private final AppUserUtils appUserUtils;
     private final RatingService ratingService;
 
-    public BookedToursWrapper getBookedTours(DataPage page) {
+    public BookedToursWrapper getBookedTours() {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
         Map<UUID, TourDate> tourDates = new HashMap<>();
@@ -67,12 +66,14 @@ public class UserOrderService {
             List<OrderTicketResponse> bookedTicketsResponse = this.
                     mapOrderTicketsToOrderTicketResponse(bookedTickets);
 
-            result.add(new BookedToursResponse(
-                    bookedTicketsResponse,
-                    e.getOrderTime(),
-                    e.getComments(),
-                    e.getTotalPrice()
-            ));
+            if (!bookedTickets.isEmpty()) {
+                result.add(new BookedToursResponse(
+                        bookedTicketsResponse,
+                        e.getOrderTime(),
+                        e.getComments(),
+                        e.getTotalPrice()
+                ));
+            }
         });
 
         List<TourDateData> tourDatesData = this.mapTourDatesToTourDateData(
