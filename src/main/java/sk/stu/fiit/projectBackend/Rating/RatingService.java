@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import sk.stu.fiit.projectBackend.Rating.dto.RatingRequest;
+import sk.stu.fiit.projectBackend.Rating.dto.RatingResponse;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 import sk.stu.fiit.projectBackend.TourOffer.TourOfferRepository;
 import sk.stu.fiit.projectBackend.User.AppUser;
@@ -31,11 +32,11 @@ public class RatingService {
 
     public HttpStatus addRating(UUID tourOfferId, RatingRequest request) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
-        
+
         TourOffer tourOffer = tourOfferRepository.findById(tourOfferId).
                 orElseThrow(() -> new TourOfferNotFoundException(tourOfferId));
-        
-        if(tourOffer.getDeletedAt() != null) {
+
+        if (tourOffer.getDeletedAt() != null) {
             throw new TourOfferNotFoundException(tourOfferId);
         }
 
@@ -63,4 +64,23 @@ public class RatingService {
         return returnStatus;
     }
 
+    public RatingResponse getRating(UUID tourOfferId) {
+        AppUser user = appUserUtils.getCurrentlyLoggedUser();
+
+        Optional<Rating> ratingOptional = user.getRatings().stream().filter(
+                e -> e.getTourOffer().getId().equals(tourOfferId)).findFirst();
+
+        if (ratingOptional.isEmpty()) {
+            return null;
+        }
+
+        Rating rating = ratingOptional.get();
+
+        return new RatingResponse(
+                tourOfferId,
+                rating.getRating(),
+                rating.getCreatedAt(),
+                rating.getUpdatedAt()
+        );
+    }
 }
