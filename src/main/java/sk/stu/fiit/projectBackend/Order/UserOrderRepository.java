@@ -5,6 +5,7 @@
  */
 package sk.stu.fiit.projectBackend.Order;
 
+import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,5 +16,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserOrderRepository extends JpaRepository<UserOrder, UUID> {
+    
+    List<UserOrder> findAllByUserId(UUID userId);
     
 }
