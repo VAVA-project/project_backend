@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sk.stu.fiit.projectBackend.Order.dto;
+package sk.stu.fiit.projectBackend.Rating.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -16,11 +16,11 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class BookedToursResponse {
-    private List<OrderTicketResponse> orderedTickets;
+public class RatingResponse {
     
-    private LocalDateTime orderTime;
-    private String comments;
+    private UUID tourOfferId;
+    private Integer rating;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     
-    private double totalPrice;
 }

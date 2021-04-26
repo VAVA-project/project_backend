@@ -6,7 +6,7 @@
 package sk.stu.fiit.projectBackend.Order.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -16,11 +16,8 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class BookedToursResponse {
-    private List<OrderTicketResponse> orderedTickets;
-    
-    private LocalDateTime orderTime;
-    private String comments;
-    
-    private double totalPrice;
+public class TourDateData {
+    private UUID id;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 }
