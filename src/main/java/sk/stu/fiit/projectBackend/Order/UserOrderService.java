@@ -84,6 +84,54 @@ public class UserOrderService {
 
         return new BookedToursWrapper(result, tourDatesData, tourOfferData);
     }
+    
+    public BookedToursWrapper getCompletedTours() {
+        AppUser user = appUserUtils.getCurrentlyLoggedUser();
+
+        Map<UUID, TourDate> tourDates = new HashMap<>();
+        Map<UUID, TourOffer> tourOffers = new HashMap<>();
+
+        List<BookedToursResponse> result = new ArrayList<>();
+
+        List<UserOrder> userOrders = user.getOrders();
+        userOrders.stream().forEach(e -> {
+            List<OrderTicket> orderedTickets = e.getOrderTickets();
+
+            List<OrderTicket> bookedTickets = new ArrayList<>();
+
+            orderedTickets.stream().
+                    filter(ticket -> ticket.getTicket().getTourDate().
+                    getEndDate().isBefore(LocalDateTime.now())).
+                    map(ticket -> {
+                        TourDate tourDate = ticket.getTicket().getTourDate();
+                        bookedTickets.add(ticket);
+                        tourDates.putIfAbsent(tourDate.getId(), tourDate);
+                        tourOffers.putIfAbsent(tourDate.getTourOffer().getId(),
+                                tourDate.getTourOffer());
+                        return tourDate;
+                    }).collect(Collectors.toList());
+
+            List<OrderTicketResponse> bookedTicketsResponse = this.
+                    mapOrderTicketsToOrderTicketResponse(bookedTickets);
+
+            if (!bookedTickets.isEmpty()) {
+                result.add(new BookedToursResponse(
+                        bookedTicketsResponse,
+                        e.getOrderTime(),
+                        e.getComments(),
+                        e.getTotalPrice()
+                ));
+            }
+        });
+
+        List<TourDateData> tourDatesData = this.mapTourDatesToTourDateData(
+                tourDates.values().stream().collect(Collectors.toList()));
+
+        List<TourOfferData> tourOfferData = this.mapTourOffersToTourOfferData(
+                tourOffers.values().stream().collect(Collectors.toList()));
+
+        return new BookedToursWrapper(result, tourDatesData, tourOfferData);
+    }
 
     private List<OrderTicketResponse> mapOrderTicketsToOrderTicketResponse(
             List<OrderTicket> orderTickets) {

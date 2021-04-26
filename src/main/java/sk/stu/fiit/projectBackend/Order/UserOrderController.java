@@ -23,9 +23,14 @@ public class UserOrderController {
     
     private final UserOrderService userOrderService;
     
-    @GetMapping(path = "/")
+    @GetMapping(path = "/new/")
     public ResponseEntity<BookedToursWrapper> getBookedTours() {
         return ResponseEntity.ok(userOrderService.getBookedTours());
+    }
+    
+    @GetMapping(path = "/past/")
+    public ResponseEntity<BookedToursWrapper> getCompletedTours() {
+        return ResponseEntity.ok(userOrderService.getCompletedTours());
     }
     
 }
