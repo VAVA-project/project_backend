@@ -31,9 +31,10 @@ public class TourOfferService {
 
     public TourOfferResponse createTourOffer(
             CreateTourOfferRequest request) {
-
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
-
+        
+        appUserUtils.checkIfIsGuide(user);
+        
         TourOffer newOffer = new TourOffer(request);
 
         user.addTourOffer(newOffer);
@@ -46,6 +47,8 @@ public class TourOfferService {
     @Transactional
     public boolean deleteTourOffer(UUID id) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
+        
+        appUserUtils.checkIfIsGuide(user);
 
         Optional<TourOffer> tourOfferOptional = user.getTourOffers().stream().
                 filter(e -> e.getId().equals(id)).findFirst();
@@ -73,6 +76,8 @@ public class TourOfferService {
     public TourOfferResponse updateTourOffer(UUID id,
             UpdateTourOfferRequest request) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
+        
+        appUserUtils.checkIfIsGuide(user);
 
         TourOffer tourOffer = user.getTourOffers().stream().filter(e -> e.
                 getId().equals(id)).findFirst().orElseThrow(

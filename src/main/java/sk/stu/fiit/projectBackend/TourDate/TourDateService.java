@@ -49,6 +49,8 @@ public class TourDateService {
         }
 
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
+        
+        appUserUtils.checkIfIsGuide(user);
 
         TourOffer tourOffer = user.getTourOffers().stream().filter(e -> e.
                 getId().equals(id)).findFirst().orElseThrow(
@@ -80,6 +82,8 @@ public class TourDateService {
         }
 
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
+        
+        appUserUtils.checkIfIsGuide(user);
 
         TourOffer tourOffer = user.getTourOffers().stream().filter(e -> e.
                 getId().equals(tourOfferId)).findFirst().orElseThrow(
@@ -118,6 +122,8 @@ public class TourDateService {
 
     public HttpStatus deleteTourDate(UUID tourId, UUID dateId) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
+        
+        appUserUtils.checkIfIsGuide(user);
 
         TourOffer tourOffer = user.getTourOffers().stream().filter(e -> e.
                 getId().equals(tourId)).findFirst().orElseThrow(
