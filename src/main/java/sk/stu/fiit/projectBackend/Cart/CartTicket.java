@@ -25,6 +25,7 @@ import sk.stu.fiit.projectBackend.Ticket.Ticket;
 import sk.stu.fiit.projectBackend.User.AppUser;
 
 /**
+ * CartTicket represents ticket which user has added to his cart.
  *
  * @author Adam Bublavý
  */
@@ -33,7 +34,7 @@ import sk.stu.fiit.projectBackend.User.AppUser;
 @Entity
 @Table
 public class CartTicket implements Serializable {
-    
+
     @Id
     @GeneratedValue(generator = "uuid_cart_ticket")
     @GenericGenerator(
@@ -48,13 +49,13 @@ public class CartTicket implements Serializable {
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(
-            name = "ticket_id", 
+            name = "ticket_id",
             referencedColumnName = "id",
             nullable = false,
             updatable = false
     )
     private Ticket ticket;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "userId",
@@ -63,17 +64,23 @@ public class CartTicket implements Serializable {
     )
     @JsonIgnore
     private AppUser user;
-    
+
     @Column(
             nullable = false,
             updatable = false
     )
     private double price;
 
+    /**
+     * Creates a new CartTicket.
+     * @param ticket Ticket which will be added to the user's cart
+     * @param user User for whom the ticket will be added to the cart
+     * @param price Current price of a ticket
+     */
     public CartTicket(Ticket ticket, AppUser user, double price) {
         this.ticket = ticket;
         this.user = user;
         this.price = price;
     }
-    
+
 }
