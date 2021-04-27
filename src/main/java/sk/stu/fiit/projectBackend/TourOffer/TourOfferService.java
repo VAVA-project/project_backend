@@ -11,11 +11,14 @@ import java.util.UUID;
 import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import sk.stu.fiit.projectBackend.Ticket.Ticket;
+import sk.stu.fiit.projectBackend.TourDate.TourDate;
 import sk.stu.fiit.projectBackend.TourOffer.dto.CreateTourOfferRequest;
 import sk.stu.fiit.projectBackend.TourOffer.dto.TourOfferResponse;
 import sk.stu.fiit.projectBackend.TourOffer.dto.UpdateTourOfferRequest;
 import sk.stu.fiit.projectBackend.User.AppUser;
 import sk.stu.fiit.projectBackend.Utils.AppUserUtils;
+import sk.stu.fiit.projectBackend.exceptions.TourDateReservedException;
 import sk.stu.fiit.projectBackend.exceptions.TourOfferNotFoundException;
 
 /**
@@ -61,6 +64,14 @@ public class TourOfferService {
 
         if (tourOffer.getDeletedAt() != null) {
             return false;
+        }
+        
+        for(TourDate tourDate : tourOffer.getTourDates()) {
+            for(Ticket ticket : tourDate.getTickets()) {
+                if(ticket.getPurchasedAt() != null) {
+                    throw new TourDateReservedException();
+                }
+            }
         }
 
         tourOffer.setDeletedAt(LocalDateTime.now());

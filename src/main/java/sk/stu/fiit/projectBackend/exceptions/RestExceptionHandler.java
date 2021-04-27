@@ -39,7 +39,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         TicketNotFoundException.class,
         TourDateNotFoundException.class,
         TourOfferNotFoundException.class,
-        UserNotFoundException.class
+        UserNotFoundException.class,
+        TourDateReservedException.class
     })
     protected ResponseEntity<Object> handleExceptions(RuntimeException e) {
         APIError response = new APIError(HttpStatus.BAD_REQUEST, e.getMessage());

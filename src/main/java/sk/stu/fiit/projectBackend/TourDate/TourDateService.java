@@ -27,6 +27,7 @@ import sk.stu.fiit.projectBackend.User.AppUser;
 import sk.stu.fiit.projectBackend.Utils.AppUserUtils;
 import sk.stu.fiit.projectBackend.exceptions.InvalidRangeException;
 import sk.stu.fiit.projectBackend.exceptions.TourDateNotFoundException;
+import sk.stu.fiit.projectBackend.exceptions.TourDateReservedException;
 import sk.stu.fiit.projectBackend.exceptions.TourOfferNotFoundException;
 
 /**
@@ -141,7 +142,12 @@ public class TourDateService {
         if (tourDate.getDeletedAt() != null) {
             return HttpStatus.NOT_FOUND;
         }
-
+        
+        // check if somebody bought ticket for this TourDate
+        if(tourDate.getTickets().stream().filter(e -> e.getPurchasedAt() != null).findFirst().isPresent()) {
+            throw new TourDateReservedException();
+        }
+        
         tourDate.setDeletedAt(LocalDateTime.now());
         tourDateRepository.save(tourDate);
 
