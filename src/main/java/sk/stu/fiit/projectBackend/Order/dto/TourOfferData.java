@@ -23,4 +23,5 @@ public class TourOfferData {
     private String description;
     
     private Integer rating;
+    private Double averageRating;
 }

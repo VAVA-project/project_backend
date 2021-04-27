@@ -84,7 +84,7 @@ public class UserOrderService {
 
         return new BookedToursWrapper(result, tourDatesData, tourOfferData);
     }
-    
+
     public BookedToursWrapper getCompletedTours() {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
@@ -170,8 +170,10 @@ public class UserOrderService {
                     tourOffer.getStartPlace(),
                     tourOffer.getDescription(),
                     tourOffer.getDescription(),
-                    ratingResponse == null ? -1 : ratingResponse.
-                                    getRating()
+                    ratingResponse == null ? null : ratingResponse.
+                                    getRating(),
+                    ratingResponse == null ? null : ratingResponse.
+                                    getAverageRating()
             );
         }).collect(Collectors.toList());
     }
