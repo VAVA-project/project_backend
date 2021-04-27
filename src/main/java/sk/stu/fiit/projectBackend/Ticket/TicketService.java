@@ -21,9 +21,16 @@ import sk.stu.fiit.projectBackend.TourOffer.dto.DataPage;
 @Service
 @AllArgsConstructor
 public class TicketService {
-    
+
     private final TicketRepository ticketRepository;
-    
+
+    /**
+     * Gets available tickets for specific TourDate.
+     *
+     * @param dateId ID of TourDate for which to find available tickets
+     * @param page Data about pagination
+     * @return Returns Page of available tickets
+     */
     public Page<Ticket> getAvailableTickets(UUID dateId, DataPage page) {
         Sort sort = Sort.by(page.getSortDirection(), page.getSortBy());
         Pageable pageable = PageRequest.of(page.getPageNumber(), page.
@@ -31,5 +38,5 @@ public class TicketService {
 
         return ticketRepository.findAvailableTickets(dateId, pageable);
     }
-    
+
 }
