@@ -30,6 +30,19 @@ public class RatingService {
     private final TourOfferRepository tourOfferRepository;
     private final AppUserUtils appUserUtils;
 
+    /**
+     * Adds rating for specific TourOffer
+     *
+     * @param tourOfferId ID of TourOffer for which to add the rating will be
+     * added
+     * @param request RatingRequest sent by user
+     * @return Returns HttpStatus.CREATED if the rating was create for this
+     * TourOffer for the first time, HttpStatus.OK otherwise
+     *
+     * @see RatingRequest
+     * @see TourOffer
+     * @see AppUser
+     */
     public HttpStatus addRating(UUID tourOfferId, RatingRequest request) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
@@ -64,6 +77,16 @@ public class RatingService {
         return returnStatus;
     }
 
+    /**
+     * Gets rating for TourOffer rated by user
+     *
+     * @param tourOfferId ID of TourOffer
+     * @return Returns data about rating in RatingResponse
+     *
+     * @see TourOffer
+     * @see AppUser
+     * @see RatingResponse
+     */
     public RatingResponse getRating(UUID tourOfferId) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 

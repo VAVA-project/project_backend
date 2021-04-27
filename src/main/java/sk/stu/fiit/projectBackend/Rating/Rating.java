@@ -23,15 +23,19 @@ import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 import sk.stu.fiit.projectBackend.User.AppUser;
 
 /**
+ * Rating represents user's rating for specific TourOffer
  *
  * @author Adam Bublavý
+ *
+ * @see AppUser
+ * @see TourOffer
  */
 @Data
 @NoArgsConstructor
 @Entity
 @Table
 public class Rating implements Serializable {
-    
+
     @Id
     @GeneratedValue(generator = "uuid_rating")
     @GenericGenerator(
@@ -43,7 +47,7 @@ public class Rating implements Serializable {
             nullable = false
     )
     private UUID id;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "creatorId",
@@ -52,7 +56,7 @@ public class Rating implements Serializable {
             updatable = false
     )
     private AppUser user;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "tourOfferId",
@@ -61,13 +65,13 @@ public class Rating implements Serializable {
             updatable = false
     )
     private TourOffer tourOffer;
-    
+
     @Column(nullable = false)
     private int rating;
-    
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
-    
+
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
@@ -76,5 +80,5 @@ public class Rating implements Serializable {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
-    
+
 }
