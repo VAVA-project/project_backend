@@ -45,6 +45,13 @@ public class CartItemService {
     private final UserOrderRepository orderRepository;
     private final AppUserUtils appUserUtils;
 
+    /**
+     * Adds the ticket to the user's cart.
+     *
+     * @param ticketId ID of a ticket which will be added to the user's cart
+     * @return True, if the ticket was successfully added to the user's cart,
+     * false otherwise
+     */
     @Transactional
     public boolean addTicketToCart(UUID ticketId) {
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(
@@ -84,6 +91,11 @@ public class CartItemService {
         return true;
     }
 
+    /**
+     * @return Returns current content of the user's cart
+     *
+     * @see CartResponse
+     */
     public CartResponse getCartContent() {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
@@ -93,6 +105,14 @@ public class CartItemService {
         return new CartResponse(cartContent, totalPrice);
     }
 
+    /**
+     * Removes the ticket from the user's cart.
+     *
+     * @param ticketId ID of the ticket which will be removed from the user's
+     * cart
+     * @return Returns true, if the ticket was successfully removed from the
+     * cart, false otherwise
+     */
     @Transactional
     public boolean removeTicketFromCart(UUID ticketId) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
@@ -113,6 +133,16 @@ public class CartItemService {
         return true;
     }
 
+    /**
+     * Checkouts cart.
+     *
+     * @param request Request which contains additional informations about
+     * checkout
+     * @return Returns UserOrder which contains ordered tickets
+     *
+     * @see CheckoutRequest
+     * @see UserOrder
+     */
     @Transactional
     public UserOrder checkout(CheckoutRequest request) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
@@ -133,13 +163,14 @@ public class CartItemService {
 
         if (!expiredTickets.isEmpty()) {
             throw new TicketPurchaseTimeExpiredException(
-                    expiredTickets.stream().map(e -> e.getTicket().getId()).collect(
-                            Collectors.toList()));
+                    expiredTickets.stream().map(e -> e.getTicket().getId()).
+                            collect(
+                                    Collectors.toList()));
         }
 
         double totalPrice = calculateTotalPriceForTickets(cartTickets);
 
-        // create new order
+        // create a new order
         UserOrder order = new UserOrder(LocalDateTime.now(),
                 totalPrice, request.getComments());
         user.addOrder(order);
@@ -158,22 +189,33 @@ public class CartItemService {
 
         return order;
     }
-    
+
+    /**
+     * Clears content of the user's cart
+     *
+     * @return Returns HttpStatus.NO_CONTENT which tells that the cart was
+     * cleared
+     */
     @Transactional
     public HttpStatus clearCart() {
         AppUser user = this.appUserUtils.getCurrentlyLoggedUser();
-        
+
         List<CartTicket> cartTickets = user.getCartTickets();
-        
+
         cartTickets.forEach(e -> {
             user.removeTicket(e.getTicket());
         });
-        
+
         cartTickets.clear();
-        
+
         return HttpStatus.NO_CONTENT;
     }
 
+    /**
+     * Calculates total price of tickets.
+     * @param cartTickets List of tickets of which the total price will be calculated
+     * @return Returns total price of tickets
+     */
     private double calculateTotalPriceForTickets(List<CartTicket> cartTickets) {
         double totalPrice = 0;
 
@@ -184,5 +226,5 @@ public class CartItemService {
 
         return totalPrice;
     }
-    
+
 }
