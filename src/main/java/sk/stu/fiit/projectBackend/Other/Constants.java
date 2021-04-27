@@ -22,5 +22,6 @@ public class Constants {
     public static final String CART_IS_EMPTY = "Your cart is empty";
     public static final String CART_TICKETS_EXPIRED = "Ticket with id %s has expired";
     public static final String USER_WITH_ID_NOT_FOUND = "User with id %s not found";
+    public static final String PERMISSION_DENIED = "You do not have permission";
 
 }

@@ -5,10 +5,20 @@
  */
 package sk.stu.fiit.projectBackend.exceptions;
 
+import static sk.stu.fiit.projectBackend.Other.Constants.PERMISSION_DENIED;
+
 /**
  *
  * @author Adam Bublavý
  */
 public class PermissionDeniedException extends RuntimeException {
+    
+    public PermissionDeniedException() {
+        super(PERMISSION_DENIED);
+    }
+    
+    public PermissionDeniedException(String message) {
+        super(message);
+    }
     
 }
