@@ -27,8 +27,11 @@ import org.hibernate.annotations.GenericGenerator;
 import sk.stu.fiit.projectBackend.User.AppUser;
 
 /**
- *
+ * UserOrder represents user's order
  * @author Adam Bublavý
+ * 
+ * @see AppUser
+ * @see OrderTicket
  */
 @Data
 @NoArgsConstructor
@@ -83,6 +86,12 @@ public class UserOrder implements Serializable {
     )
     private List<OrderTicket> orderTickets = new ArrayList<>(0);
     
+    /**
+     * Creates new UserOrder
+     * @param orderTime Time when order was created
+     * @param totalPrice Total price of the ordered tickets
+     * @param comments Optional comments sended by the user
+     */
     public UserOrder(LocalDateTime orderTime, double totalPrice,
             String comments) {
         this.orderTime = orderTime;
@@ -92,6 +101,10 @@ public class UserOrder implements Serializable {
         this.updatedAt = LocalDateTime.now();
     }
     
+    /**
+     * Adds order ticket to this order
+     * @param orderTicket OrderTicket which will be added to this order
+     */
     public void addOrderTicket(OrderTicket orderTicket) {
         if (orderTicket == null) {
             return;
@@ -101,6 +114,10 @@ public class UserOrder implements Serializable {
         orderTicket.setOrder(this);
     }
     
+    /**
+     * Removes order ticket from this order
+     * @param orderTicket OrderTicket which will be removed from this order
+     */
     public void removeOrderTicket(OrderTicket orderTicket) {
         if (orderTicket == null) {
             return;

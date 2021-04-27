@@ -28,6 +28,9 @@ import sk.stu.fiit.projectBackend.User.AppUser;
  * CartTicket represents ticket which user has added to his cart.
  *
  * @author Adam Bublavý
+ * 
+ * @see Ticket
+ * @see AppUser
  */
 @Data
 @NoArgsConstructor
