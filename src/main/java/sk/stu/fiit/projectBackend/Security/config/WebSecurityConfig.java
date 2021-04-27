@@ -28,24 +28,23 @@ import sk.stu.fiit.projectBackend.filters.JWTFilter;
 @AllArgsConstructor
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    
+
     private static final String[] WHITELIST = {
-            // -- Swagger UI v2
-            "/v2/api-docs",
-            "/swagger-resources",
-            "/swagger-resources/**",
-            "/configuration/ui",
-            "/configuration/security",
-            "/swagger-ui.html",
-            "/webjars/**",
-            // -- Swagger UI v3 (OpenAPI)
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            
-            "/api/v*/register/",
-            "/api/v*/register",
-            "/api/v*/login/",
-            "/api/v*/login"
+        // -- Swagger UI v2
+        "/v2/api-docs",
+        "/swagger-resources",
+        "/swagger-resources/**",
+        "/configuration/ui",
+        "/configuration/security",
+        "/swagger-ui.html",
+        "/webjars/**",
+        // -- Swagger UI v3 (OpenAPI)
+        "/v3/api-docs/**",
+        "/swagger-ui/**",
+        "/api/v*/register/",
+        "/api/v*/register",
+        "/api/v*/login/",
+        "/api/v*/login"
     };
 
     private final AppUserService appUserService;
@@ -56,10 +55,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests().antMatchers(
-                Arrays.asList(WHITELIST).toArray(String[]::new)).permitAll().anyRequest().
+                Arrays.asList(WHITELIST).toArray(String[]::new)).permitAll().
+                anyRequest().
                 authenticated().and().exceptionHandling().and().
                 sessionManagement().sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS);
+
+        http.requiresChannel().requestMatchers(r -> r.getHeader(
+                "X-Forwarded-Proto") != null).requiresSecure();
 
         http.addFilterBefore(jwtFilter,
                 UsernamePasswordAuthenticationFilter.class);
