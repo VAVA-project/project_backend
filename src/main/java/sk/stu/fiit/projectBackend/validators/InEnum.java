@@ -14,6 +14,7 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
+ * InEnum is used to check if variable has one of enumClass values
  *
  * @author Adam Bublavý
  */
@@ -22,8 +23,12 @@ import javax.validation.Payload;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface InEnum {
+
     Class<? extends Enum<?>> enumClass();
+
     String message() default "must be any of enum types";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }
