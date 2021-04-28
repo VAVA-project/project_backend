@@ -7,9 +7,11 @@ package sk.stu.fiit.projectBackend.Ticket;
 
 import java.util.Optional;
 import java.util.UUID;
+import javax.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import sk.stu.fiit.projectBackend.TourDate.TourDate;
@@ -46,5 +48,10 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
      */
     @Query("select count(*) from Ticket c where c.purchasedAt is not null and c.tourDate.id = ?1")
     Optional<Integer> countSoldTickets(UUID tourDateId);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Override
+    public Optional<Ticket> findById(UUID id);
+    
 
 }
