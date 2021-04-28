@@ -5,10 +5,10 @@
  */
 package sk.stu.fiit.projectBackend.Rating;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import sk.stu.fiit.projectBackend.Rating.dto.RatingRequest;
 import sk.stu.fiit.projectBackend.Rating.dto.RatingResponse;
@@ -43,7 +43,7 @@ public class RatingService {
      * @see TourOffer
      * @see AppUser
      */
-    public HttpStatus addRating(UUID tourOfferId, RatingRequest request) {
+    public RatingResponse addRating(UUID tourOfferId, RatingRequest request) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
         TourOffer tourOffer = tourOfferRepository.findById(tourOfferId).
@@ -53,28 +53,31 @@ public class RatingService {
             throw new TourOfferNotFoundException(tourOfferId);
         }
 
-        HttpStatus returnStatus = HttpStatus.CREATED;
-
-        Optional<Rating> optionalRating = ratingRepository.
+        Optional<Rating> ratingOptional = ratingRepository.
                 findByUserIdAndTourOfferId(user.
                         getId(), tourOfferId);
 
         Rating rating;
 
-        if (optionalRating.isPresent()) {
-            returnStatus = HttpStatus.OK;
-            rating = optionalRating.get();
-            rating.setRating(request.getRating());
+        if (ratingOptional.isPresent()) {
+            rating = ratingOptional.get();
+            rating.setUpdatedAt(LocalDateTime.now());
         } else {
             rating = new Rating(request.getRating());
+            tourOffer.addRating(rating);
+            user.addRating(rating);
         }
 
-        tourOffer.addRating(rating);
-        user.addRating(rating);
+        rating.setRating(request.getRating());
 
         ratingRepository.save(rating);
+        
+        Optional<Double> averageRating = ratingRepository.
+                calculateAverageRating(tourOfferId);
 
-        return returnStatus;
+        return new RatingResponse(tourOfferId, rating.getRating(),
+                averageRating.isPresent() ? averageRating.get() : null,
+                rating.getCreatedAt(), rating.getUpdatedAt());
     }
 
     /**
@@ -93,17 +96,31 @@ public class RatingService {
         Optional<Rating> ratingOptional = user.getRatings().stream().filter(
                 e -> e.getTourOffer().getId().equals(tourOfferId)).findFirst();
 
-        if (ratingOptional.isEmpty()) {
-            return null;
+        Optional<Double> averageRatingOptional = this.ratingRepository.
+                calculateAverageRating(tourOfferId);
+
+        LocalDateTime createdAt = null;
+        LocalDateTime updatedAt = null;
+        Integer userRating = null;
+        Double averageRating = null;
+
+        if (ratingOptional.isPresent()) {
+            Rating rating = ratingOptional.get();
+            createdAt = rating.getCreatedAt();
+            updatedAt = rating.getUpdatedAt();
+            userRating = rating.getRating();
         }
 
-        Rating rating = ratingOptional.get();
+        if (averageRatingOptional.isPresent()) {
+            averageRating = averageRatingOptional.get();
+        }
 
         return new RatingResponse(
                 tourOfferId,
-                rating.getRating(),
-                rating.getCreatedAt(),
-                rating.getUpdatedAt()
+                userRating,
+                averageRating,
+                createdAt,
+                updatedAt
         );
     }
 }

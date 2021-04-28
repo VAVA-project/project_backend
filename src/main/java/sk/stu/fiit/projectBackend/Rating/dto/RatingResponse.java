@@ -20,6 +20,7 @@ public class RatingResponse {
     
     private UUID tourOfferId;
     private Integer rating;
+    private Double averageRating;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     
