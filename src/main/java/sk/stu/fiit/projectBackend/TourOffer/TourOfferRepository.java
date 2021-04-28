@@ -45,7 +45,7 @@ public interface TourOfferRepository extends JpaRepository<TourOffer, UUID> {
      * @param destinationPlaceQuery Search expression for destinationPlace
      * @param pageable Data about pagination
      * @return Returns Page of TourOffers
-     * 
+     *
      * @see TourOffer
      * @see Page
      */

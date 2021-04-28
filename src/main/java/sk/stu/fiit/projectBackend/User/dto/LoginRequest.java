@@ -15,17 +15,16 @@ import lombok.Setter;
  *
  * @author Adam Bublavý
  */
-
 @AllArgsConstructor
 @Getter
 @Setter
 public class LoginRequest {
-    
+
     @NotBlank(message = "required")
     @Email(message = "invalid email")
     private String email;
-    
+
     @NotBlank(message = "required")
     private String password;
-    
+
 }

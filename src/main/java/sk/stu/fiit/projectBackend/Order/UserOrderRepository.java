@@ -17,14 +17,14 @@ import sk.stu.fiit.projectBackend.User.AppUser;
  */
 @Repository
 public interface UserOrderRepository extends JpaRepository<UserOrder, UUID> {
-    
+
     /**
      * @param userId ID of user
      * @return Returns list of all UserOrder for given user
-     * 
+     *
      * @see UserOrder
      * @see AppUser
      */
     List<UserOrder> findAllByUserId(UUID userId);
-    
+
 }

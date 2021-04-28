@@ -28,7 +28,7 @@ import sk.stu.fiit.projectBackend.User.AppUser;
  * CartTicket represents ticket which user has added to his cart.
  *
  * @author Adam Bublavý
- * 
+ *
  * @see Ticket
  * @see AppUser
  */
@@ -76,6 +76,7 @@ public class CartTicket implements Serializable {
 
     /**
      * Creates a new CartTicket.
+     *
      * @param ticket Ticket which will be added to the user's cart
      * @param user User for whom the ticket will be added to the cart
      * @param price Current price of a ticket

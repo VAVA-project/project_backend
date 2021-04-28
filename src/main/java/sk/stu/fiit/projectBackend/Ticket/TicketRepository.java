@@ -28,7 +28,7 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
      * @param dateId ID of TourDate
      * @param pageable Data about paging
      * @return Returns Page of available tickets
-     * 
+     *
      * @see TourDate
      * @see Ticket
      */
@@ -37,9 +37,10 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
 
     /**
      * Counts sold tickets for specific TourDate
+     *
      * @param tourDateId ID of TourDate
      * @return Returns number of sold tickets
-     * 
+     *
      * @see TourDate
      * @see Ticket
      */

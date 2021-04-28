@@ -46,13 +46,13 @@ public class RatingController {
             @PathVariable(name = "tourOfferId") UUID tourOfferId
     ) {
         RatingResponse response = ratingService.getRating(tourOfferId);
-        
+
         HttpStatus status = HttpStatus.OK;
-        
-        if(response == null) {
+
+        if (response == null) {
             status = HttpStatus.NOT_FOUND;
         }
-        
+
         return ResponseEntity.status(status).body(response);
     }
 

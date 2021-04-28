@@ -71,7 +71,7 @@ public class RatingService {
         rating.setRating(request.getRating());
 
         ratingRepository.save(rating);
-        
+
         Optional<Double> averageRating = ratingRepository.
                 calculateAverageRating(tourOfferId);
 

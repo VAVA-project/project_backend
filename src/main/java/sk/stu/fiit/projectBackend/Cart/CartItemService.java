@@ -213,7 +213,9 @@ public class CartItemService {
 
     /**
      * Calculates total price of tickets.
-     * @param cartTickets List of tickets of which the total price will be calculated
+     *
+     * @param cartTickets List of tickets of which the total price will be
+     * calculated
      * @return Returns total price of tickets
      */
     private double calculateTotalPriceForTickets(List<CartTicket> cartTickets) {

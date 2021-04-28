@@ -77,6 +77,7 @@ public class Rating implements Serializable {
 
     /**
      * Creates new Rating
+     *
      * @param rating User's rating
      */
     public Rating(int rating) {

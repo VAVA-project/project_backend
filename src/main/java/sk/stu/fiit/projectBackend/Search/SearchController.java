@@ -24,9 +24,9 @@ import sk.stu.fiit.projectBackend.TourOffer.dto.TourOffersDataPage;
 @AllArgsConstructor
 @RequestMapping(path = "api/v1")
 public class SearchController {
-    
+
     private final SearchService searchService;
-    
+
     @GetMapping(path = "/search/")
     public ResponseEntity<Page<TourOfferResponse>> searchTourOffers(
             @RequestParam("q") String query,
@@ -34,5 +34,5 @@ public class SearchController {
     ) {
         return ResponseEntity.ok(searchService.searchTourOffers(query, page));
     }
-    
+
 }

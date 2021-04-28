@@ -34,5 +34,5 @@ public class UpdateRequest {
     private LocalDate dateOfBirth;
 
     private byte[] photo;
-    
+
 }

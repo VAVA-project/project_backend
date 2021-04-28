@@ -13,12 +13,11 @@ import sk.stu.fiit.projectBackend.User.AppUser;
  *
  * @author Adam Bublavý
  */
-
 @AllArgsConstructor
 @Getter
 public class LoginResponse {
-    
+
     private final String jwtToken;
     private final AppUser user;
-    
+
 }

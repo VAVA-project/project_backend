@@ -19,17 +19,17 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateTourOfferRequest {
-    
+
     @NotBlank(message = "required")
     private String startPlace;
-    
+
     @NotBlank(message = "required")
     private String destinationPlace;
-    
+
     @NotBlank(message = "required")
     private String description;
-    
+
     @Positive(message = "price must be positive")
     private double pricePerPerson;
-    
+
 }

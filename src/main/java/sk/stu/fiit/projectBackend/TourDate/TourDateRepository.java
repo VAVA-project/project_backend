@@ -17,8 +17,9 @@ import org.springframework.stereotype.Repository;
  * @author Adam Bublavý
  */
 @Repository
-public interface TourDateRepository extends JpaRepository<TourDate, UUID>{
-    
-    Page<TourDate> findByTourOfferIdAndDeletedAtIsNullAndStartDateGreaterThanEqual(UUID tourOfferId, LocalDateTime time, Pageable pageable);
-    
+public interface TourDateRepository extends JpaRepository<TourDate, UUID> {
+
+    Page<TourDate> findByTourOfferIdAndDeletedAtIsNullAndStartDateGreaterThanEqual(
+            UUID tourOfferId, LocalDateTime time, Pageable pageable);
+
 }

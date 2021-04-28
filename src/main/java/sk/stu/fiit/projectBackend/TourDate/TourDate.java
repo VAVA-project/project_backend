@@ -96,7 +96,7 @@ public class TourDate implements Serializable {
      * @param endDate Date when the tour ends
      * @param numberOfTickets Number of tickets which can be bought by customers
      * for this TourDate
-     * 
+     *
      * @see TourOffer
      * @see AppUser
      * @see Ticket
@@ -112,8 +112,9 @@ public class TourDate implements Serializable {
 
     /**
      * Adds a new ticket to this TourDate
+     *
      * @param ticket Ticket which will be added for this TourDate
-     * 
+     *
      * @see Ticket
      */
     public void addTicket(Ticket ticket) {
@@ -127,8 +128,9 @@ public class TourDate implements Serializable {
 
     /**
      * Removes the ticket from this TourDate
+     *
      * @param ticket Ticket which will be removed from this TourDate
-     * 
+     *
      * @see Ticket
      */
     public void removeTicket(Ticket ticket) {

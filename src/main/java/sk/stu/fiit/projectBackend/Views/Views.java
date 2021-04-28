@@ -10,7 +10,8 @@ package sk.stu.fiit.projectBackend.Views;
  * @author Adam Bublavý
  */
 public class Views {
-    
-    public static class Public {}
-    
+
+    public static class Public {
+    }
+
 }

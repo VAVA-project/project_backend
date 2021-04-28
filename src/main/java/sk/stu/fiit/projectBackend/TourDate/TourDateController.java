@@ -63,13 +63,14 @@ public class TourDateController {
                 tourDateId);
         return ResponseEntity.status(status).build();
     }
-    
+
     @GetMapping(path = "/dates/")
     public ResponseEntity<Page<TourDateResponse>> getTourDates(
             @PathVariable("tourOfferId") UUID tourOfferId,
             @Valid TourDateDataPage page
     ) {
-        return ResponseEntity.ok(tourDateService.getTourDates(tourOfferId, page));
+        return ResponseEntity.
+                ok(tourDateService.getTourDates(tourOfferId, page));
     }
 
 }

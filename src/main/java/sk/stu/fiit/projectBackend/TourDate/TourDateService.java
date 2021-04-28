@@ -153,7 +153,7 @@ public class TourDateService {
      * @param dateId ID of TourDate
      * @return Returns HttpStatus.NO_CONTENT if TourDate was successfully
      * deleted or HttpStatus.NOT_FOUND if TourDate was not found
-     * 
+     *
      * @see TourOffer
      * @see TourDate
      */
@@ -193,10 +193,11 @@ public class TourDateService {
 
     /**
      * Gets TourDates for specific TourOffer
+     *
      * @param tourOfferId ID of TourOffer
      * @param page Data about pagination
      * @return Returns Page of TourDates mapped into TourDateResponse
-     * 
+     *
      * @see TourOffer
      * @see TourDate
      * @see Page

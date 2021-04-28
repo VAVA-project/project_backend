@@ -22,13 +22,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Setter
 @ToString
 public class UpdateTourDateRequest {
-    
+
     @FutureOrPresent(message = "invalid range")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime startDate;
-    
+
     @FutureOrPresent(message = "invalid range")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime endDate;
-    
+
 }

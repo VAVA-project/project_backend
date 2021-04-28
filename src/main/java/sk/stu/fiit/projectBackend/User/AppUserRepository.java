@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
  * @author Adam Bublavý
  */
 @Repository
-public interface AppUserRepository extends JpaRepository<AppUser, UUID>{
+public interface AppUserRepository extends JpaRepository<AppUser, UUID> {
+
     Optional<AppUser> findByEmail(String email);
 }

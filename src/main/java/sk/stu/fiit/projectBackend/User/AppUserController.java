@@ -66,7 +66,7 @@ public class AppUserController {
             @Valid @RequestBody UpdateRequest request) {
         return ResponseEntity.ok(appUserService.updateUser(request));
     }
-    
+
     @GetMapping(path = "/users/{userId}/")
     @JsonView(Views.Public.class)
     public ResponseEntity<AppUser> getUser(

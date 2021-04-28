@@ -27,7 +27,7 @@ import sk.stu.fiit.projectBackend.Ticket.Ticket;
  * OrderTicket represents ticket which was already ordered by the user
  *
  * @author Adam Bublavý
- * 
+ *
  * @see Ticket
  * @see UserOrder
  */
@@ -76,6 +76,7 @@ public class OrderTicket implements Serializable {
 
     /**
      * Creates new OrderTicket.
+     *
      * @param ticket Ticket which was ordered
      * @param price Actual price of the ticket
      */
