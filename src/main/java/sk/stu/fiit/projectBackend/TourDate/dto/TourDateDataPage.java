@@ -19,6 +19,7 @@ import sk.stu.fiit.projectBackend.validators.NullOrNotBlank;
  */
 @Data
 public class TourDateDataPage {
+
     @Min(0)
     private int pageNumber = 0;
 

@@ -8,6 +8,8 @@ package sk.stu.fiit.projectBackend.exceptions;
 import static sk.stu.fiit.projectBackend.Other.Constants.INCORRECT_USERNAME_OR_PASSWORD;
 
 /**
+ * IncorrectUsernameOrPasswordException is thrown when the user typed incorrect
+ * username or password
  *
  * @author Adam Bublavý
  */

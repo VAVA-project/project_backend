@@ -21,18 +21,18 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RatingRequest {
-    
+
     @NotNull(message = "required")
     @Min(value = 0, message = "value must be between 0 and 5")
     @Max(value = 5, message = "value must be between 0 and 5")
     private Integer rating;
-    
+
     /*
     This variable is not used anywhere.
     It must be defined here to be able to receive rating request.
     Without it, it will throw HttpStatus 400 :)
     It is some kind of dark magic.
-    */
+     */
     private LocalDateTime time;
-    
+
 }

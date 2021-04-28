@@ -19,6 +19,7 @@ import sk.stu.fiit.projectBackend.validators.NullOrNotBlank;
  */
 @Data
 public class TourOffersDataPage {
+
     @Min(0)
     private int pageNumber = 0;
 
@@ -30,6 +31,7 @@ public class TourOffersDataPage {
     private Sort.Direction sortDirection = Sort.Direction.DESC;
 
     @NullOrNotBlank
-    @In(allowedValues = {"createdAt", "updatedAt", "pricePerPerson", "startPlace", "destinationPlace"})
+    @In(allowedValues = {"createdAt", "updatedAt", "pricePerPerson",
+        "startPlace", "destinationPlace"})
     private String sortBy = "createdAt";
 }

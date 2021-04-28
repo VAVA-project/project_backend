@@ -17,16 +17,16 @@ import sk.stu.fiit.projectBackend.validators.NullOrNotBlank;
 @AllArgsConstructor
 @Data
 public class UpdateTourOfferRequest {
-    
+
     @NullOrNotBlank
     private String startPlace;
-    
+
     @NullOrNotBlank
     private String destinationPlace;
-    
+
     @NullOrNotBlank
     private String description;
-    
+
     @Positive(message = "price must be positive")
     private Double pricePerPerson;
 }

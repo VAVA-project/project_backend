@@ -42,6 +42,18 @@ public class TourDateService {
     private final TicketRepository ticketRepository;
     private final AppUserUtils appUserUtils;
 
+    /**
+     * Creates a new TourDate for specific TourOffer
+     *
+     * @param id ID of TourOffer
+     * @param request Data from the user
+     * @return Returns newly created TourOffer mapped into TourDateResponse
+     *
+     * @see TourDate
+     * @see TourOffer
+     * @see AppUser
+     * @see TourDateResponse
+     */
     @Transactional
     public TourDateResponse createTourDate(UUID id,
             CreateTourDateRequest request) {
@@ -50,7 +62,7 @@ public class TourDateService {
         }
 
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
-        
+
         appUserUtils.checkIfIsGuide(user);
 
         TourOffer tourOffer = user.getTourOffers().stream().filter(e -> e.
@@ -75,6 +87,19 @@ public class TourDateService {
         return new TourDateResponse(newTourDate);
     }
 
+    /**
+     * Updates specific TourDate
+     *
+     * @param tourOfferId ID of TourOffer for which this TourDate exists
+     * @param tourDateId ID of TourDate
+     * @param request Data from the user
+     * @return Returns updated TourDate mapped into TourDateResponse
+     *
+     * @see TourOffer
+     * @see TourDate
+     * @see AppUser
+     * @see TourDateResponse
+     */
     public TourDateResponse updateTourDate(UUID tourOfferId, UUID tourDateId,
             UpdateTourDateRequest request) {
         if (request.getStartDate() != null && request.getEndDate() != null && request.
@@ -83,7 +108,7 @@ public class TourDateService {
         }
 
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
-        
+
         appUserUtils.checkIfIsGuide(user);
 
         TourOffer tourOffer = user.getTourOffers().stream().filter(e -> e.
@@ -121,9 +146,20 @@ public class TourDateService {
         return new TourDateResponse(tourDate);
     }
 
+    /**
+     * Deletes specific TourDate
+     *
+     * @param tourId ID of TourOffer for which the TourDate was created
+     * @param dateId ID of TourDate
+     * @return Returns HttpStatus.NO_CONTENT if TourDate was successfully
+     * deleted or HttpStatus.NOT_FOUND if TourDate was not found
+     *
+     * @see TourOffer
+     * @see TourDate
+     */
     public HttpStatus deleteTourDate(UUID tourId, UUID dateId) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
-        
+
         appUserUtils.checkIfIsGuide(user);
 
         TourOffer tourOffer = user.getTourOffers().stream().filter(e -> e.
@@ -142,19 +178,31 @@ public class TourDateService {
         if (tourDate.getDeletedAt() != null) {
             return HttpStatus.NOT_FOUND;
         }
-        
+
         // check if somebody bought ticket for this TourDate
-        if(tourDate.getTickets().stream().filter(e -> e.getPurchasedAt() != null).findFirst().isPresent()) {
+        if (tourDate.getTickets().stream().filter(
+                e -> e.getPurchasedAt() != null).findFirst().isPresent()) {
             throw new TourDateReservedException();
         }
-        
+
         tourDate.setDeletedAt(LocalDateTime.now());
         tourDateRepository.save(tourDate);
 
         return HttpStatus.NO_CONTENT;
     }
 
-    public Page<TourDateResponse> getTourDates(UUID dateId,
+    /**
+     * Gets TourDates for specific TourOffer
+     *
+     * @param tourOfferId ID of TourOffer
+     * @param page Data about pagination
+     * @return Returns Page of TourDates mapped into TourDateResponse
+     *
+     * @see TourOffer
+     * @see TourDate
+     * @see Page
+     */
+    public Page<TourDateResponse> getTourDates(UUID tourOfferId,
             TourDateDataPage page) {
         Sort sort = Sort.by(page.getSortDirection(), page.getSortBy());
         Pageable pageable = PageRequest.of(page.getPageNumber(), page.
@@ -162,20 +210,20 @@ public class TourDateService {
 
         Page<TourDate> response = tourDateRepository.
                 findByTourOfferIdAndDeletedAtIsNullAndStartDateGreaterThanEqual(
-                        dateId,
+                        tourOfferId,
                         LocalDateTime.now(),
                         pageable);
 
         Page<TourDateResponse> transformedResponse = response.map(
                 TourDateResponse::new);
-        
+
         transformedResponse.stream().forEach(e -> {
             int numberOfSoldTickets = this.ticketRepository.countSoldTickets(
                     e.getId()).get();
-            
+
             e.setNumberOfSoldTickets(numberOfSoldTickets);
         });
-        
+
         return transformedResponse;
     }
 

@@ -18,10 +18,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface RatingRepository extends JpaRepository<Rating, UUID> {
-    
+
     Optional<Rating> findByUserIdAndTourOfferId(UUID userId, UUID tourId);
-    
+
     @Query("SELECT AVG(e.rating) FROM Rating e WHERE e.tourOffer.id = :tourOfferId")
-    Optional<Double> calculateAverageRating(@Param("tourOfferId") UUID tourOfferId);
-    
+    Optional<Double> calculateAverageRating(
+            @Param("tourOfferId") UUID tourOfferId);
+
 }

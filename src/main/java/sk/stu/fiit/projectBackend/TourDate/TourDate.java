@@ -26,10 +26,15 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import sk.stu.fiit.projectBackend.Ticket.Ticket;
 import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
+import sk.stu.fiit.projectBackend.User.AppUser;
 
 /**
+ * TourDate holds data about specific tour date. Each TourOffer has several
+ * TourDates when it takes place.
  *
  * @author Adam Bublavý
+ *
+ * @see TourOffer
  */
 @Data
 @NoArgsConstructor
@@ -54,7 +59,7 @@ public class TourDate implements Serializable {
 
     @Column(nullable = false)
     private LocalDateTime endDate;
-    
+
     @Column(nullable = false)
     private int numberOfTickets;
 
@@ -84,7 +89,20 @@ public class TourDate implements Serializable {
     @JsonIgnore
     private List<Ticket> tickets = new ArrayList<>(0);
 
-    public TourDate(LocalDateTime startDate, LocalDateTime endDate, int numberOfTickets) {
+    /**
+     * Creates new TourDate
+     *
+     * @param startDate Date when the tour starts
+     * @param endDate Date when the tour ends
+     * @param numberOfTickets Number of tickets which can be bought by customers
+     * for this TourDate
+     *
+     * @see TourOffer
+     * @see AppUser
+     * @see Ticket
+     */
+    public TourDate(LocalDateTime startDate, LocalDateTime endDate,
+            int numberOfTickets) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.numberOfTickets = numberOfTickets;
@@ -92,6 +110,13 @@ public class TourDate implements Serializable {
         this.updatedAt = LocalDateTime.now();
     }
 
+    /**
+     * Adds a new ticket to this TourDate
+     *
+     * @param ticket Ticket which will be added for this TourDate
+     *
+     * @see Ticket
+     */
     public void addTicket(Ticket ticket) {
         if (ticket == null) {
             return;
@@ -101,6 +126,13 @@ public class TourDate implements Serializable {
         ticket.setTourDate(this);
     }
 
+    /**
+     * Removes the ticket from this TourDate
+     *
+     * @param ticket Ticket which will be removed from this TourDate
+     *
+     * @see Ticket
+     */
     public void removeTicket(Ticket ticket) {
         if (ticket == null) {
             return;

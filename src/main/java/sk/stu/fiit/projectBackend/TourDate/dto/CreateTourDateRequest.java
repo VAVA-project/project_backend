@@ -22,18 +22,18 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Getter
 @Setter
 public class CreateTourDateRequest {
-    
+
     @NotNull(message = "required")
     @FutureOrPresent(message = "invalid range")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime startDate;
-    
+
     @NotNull(message = "required")
     @FutureOrPresent(message = "invalid range")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime endDate;
-    
+
     @Positive(message = "must be positive")
     private int numberOfTickets;
-    
+
 }

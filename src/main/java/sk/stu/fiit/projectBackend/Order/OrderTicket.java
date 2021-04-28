@@ -24,15 +24,19 @@ import org.hibernate.annotations.GenericGenerator;
 import sk.stu.fiit.projectBackend.Ticket.Ticket;
 
 /**
+ * OrderTicket represents ticket which was already ordered by the user
  *
  * @author Adam Bublavý
+ *
+ * @see Ticket
+ * @see UserOrder
  */
 @Data
 @NoArgsConstructor
 @Entity
 @Table
 public class OrderTicket implements Serializable {
-    
+
     @Id
     @GeneratedValue(generator = "uuid_order_ticket")
     @GenericGenerator(
@@ -47,19 +51,19 @@ public class OrderTicket implements Serializable {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(
-            name = "ticketId", 
+            name = "ticketId",
             referencedColumnName = "id",
             nullable = false,
             updatable = false
     )
     private Ticket ticket;
-    
+
     @Column(
             nullable = false,
             updatable = false
     )
     private double price;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "orderId",
@@ -70,6 +74,12 @@ public class OrderTicket implements Serializable {
     @JsonIgnore
     private UserOrder order;
 
+    /**
+     * Creates new OrderTicket.
+     *
+     * @param ticket Ticket which was ordered
+     * @param price Actual price of the ticket
+     */
     public OrderTicket(Ticket ticket, double price) {
         this.ticket = ticket;
         this.price = price;

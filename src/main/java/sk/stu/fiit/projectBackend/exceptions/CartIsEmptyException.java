@@ -8,6 +8,7 @@ package sk.stu.fiit.projectBackend.exceptions;
 import sk.stu.fiit.projectBackend.Other.Constants;
 
 /**
+ * CartIsEmptyException is thrown when the action doesn't allow empty cart
  *
  * @author Adam Bublavý
  */
@@ -20,5 +21,5 @@ public class CartIsEmptyException extends RuntimeException {
     public CartIsEmptyException(String message) {
         super(message);
     }
-    
+
 }

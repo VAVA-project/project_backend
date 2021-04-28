@@ -37,6 +37,19 @@ public class UserOrderService {
     private final AppUserUtils appUserUtils;
     private final RatingService ratingService;
 
+    /**
+     * Scans all user orders and filters out the tickets for tour dates which
+     * didn't yet happen
+     *
+     * @return Returns filtered tickets also with informations about tour offer
+     * and tour dates
+     *
+     * @see BookedToursResponse
+     * @see TourDate
+     * @see TourOffer
+     * @see OrderTicket
+     * @see UserOrder
+     */
     public BookedToursWrapper getBookedTours() {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
@@ -85,6 +98,19 @@ public class UserOrderService {
         return new BookedToursWrapper(result, tourDatesData, tourOfferData);
     }
 
+    /**
+     * Scans all user orders and filters out the tickets for tour dates which
+     * have happened
+     *
+     * @return Returns filtered tickets also with informations about tour offer
+     * and tour dates
+     *
+     * @see BookedToursResponse
+     * @see TourDate
+     * @see TourOffer
+     * @see OrderTicket
+     * @see UserOrder
+     */
     public BookedToursWrapper getCompletedTours() {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
@@ -133,6 +159,15 @@ public class UserOrderService {
         return new BookedToursWrapper(result, tourDatesData, tourOfferData);
     }
 
+    /**
+     * Maps OrderTicket to OrderTicketResponse
+     *
+     * @param orderTickets list of OrderTickets which will be mapped
+     * @return Returns list of OrderTicketResponses
+     *
+     * @see OrderTicket
+     * @see OrderTicketResponse
+     */
     private List<OrderTicketResponse> mapOrderTicketsToOrderTicketResponse(
             List<OrderTicket> orderTickets) {
         return orderTickets.stream().map(
@@ -149,6 +184,15 @@ public class UserOrderService {
                 }).collect(Collectors.toList());
     }
 
+    /**
+     * Maps TourDates to TourDateData which will be sent in response
+     *
+     * @param tourDates List of tour dates which will be mapped
+     * @return Returns list of mapped TourDateData
+     *
+     * @see TourDate
+     * @see TourDateData
+     */
     private List<TourDateData> mapTourDatesToTourDateData(
             List<TourDate> tourDates) {
         return tourDates.stream().map(tourDate -> {
@@ -159,6 +203,15 @@ public class UserOrderService {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * Maps TourOffers to TourOfferData which will be sent in response
+     *
+     * @param tourOffers List of tour offers which will be mapped
+     * @return Returns list of mapped TourOfferData
+     *
+     * @see TourOffer
+     * @see TourOfferData
+     */
     private List<TourOfferData> mapTourOffersToTourOfferData(
             List<TourOffer> tourOffers) {
         return tourOffers.stream().map(tourOffer -> {

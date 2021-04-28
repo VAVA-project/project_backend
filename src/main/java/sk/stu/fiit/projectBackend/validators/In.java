@@ -14,6 +14,7 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
+ * In is used to check if variable has one of values specified in allowedValues
  *
  * @author Adam Bublavý
  */
@@ -22,9 +23,14 @@ import javax.validation.Payload;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface In {
+
     String message() default "required";
+
     String[] allowedValues() default {};
+
     boolean ignoreCase() default false;
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

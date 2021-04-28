@@ -14,6 +14,7 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
+ * NullOrNotBlank is used to check if variable is null or not blank
  *
  * @author Adam Bublavý
  */
@@ -22,7 +23,10 @@ import javax.validation.Payload;
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NullOrNotBlank {
+
     String message() default "required";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

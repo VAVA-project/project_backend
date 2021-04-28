@@ -24,15 +24,16 @@ import sk.stu.fiit.projectBackend.TourOffer.dto.DataPage;
 @AllArgsConstructor
 @RequestMapping(path = "api/v1/tickets")
 public class TicketController {
-    
+
     private final TicketService ticketService;
-    
+
     @GetMapping(path = "/{tourDateId}/")
     public ResponseEntity<Page<Ticket>> getAvailableTickets(
             @PathVariable("tourDateId") UUID tourDateId,
             @Valid DataPage page
     ) {
-        return ResponseEntity.ok(ticketService.getAvailableTickets(tourDateId, page));
+        return ResponseEntity.ok(ticketService.getAvailableTickets(tourDateId,
+                page));
     }
-    
+
 }

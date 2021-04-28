@@ -6,6 +6,7 @@
 package sk.stu.fiit.projectBackend.exceptions;
 
 /**
+ * RecordNotFoundException is thrown when the searched record is not found
  *
  * @author Adam Bublavý
  */
@@ -14,5 +15,5 @@ public class RecordNotFoundException extends RuntimeException {
     public RecordNotFoundException(String message) {
         super(message);
     }
-    
+
 }

@@ -18,7 +18,7 @@ import sk.stu.fiit.projectBackend.TourDate.TourDate;
 @Data
 @AllArgsConstructor
 public class TourDateResponse {
-    
+
     private UUID id;
     private UUID tourOfferId;
     private LocalDateTime startDate;
@@ -27,7 +27,7 @@ public class TourDateResponse {
     private int numberOfTickets;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    
+
     public TourDateResponse(TourDate tourDate) {
         this.id = tourDate.getId();
         this.tourOfferId = tourDate.getTourOffer().getId();
@@ -37,5 +37,5 @@ public class TourDateResponse {
         this.createdAt = tourDate.getCreatedAt();
         this.updatedAt = tourDate.getUpdatedAt();
     }
-    
+
 }

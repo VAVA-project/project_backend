@@ -9,6 +9,8 @@ import java.util.UUID;
 import sk.stu.fiit.projectBackend.Other.Constants;
 
 /**
+ * TourDateNotFoundException is thrown when TourDate with specific ID is not
+ * found
  *
  * @author Adam Bublavý
  */
@@ -17,5 +19,5 @@ public class TourDateNotFoundException extends RecordNotFoundException {
     public TourDateNotFoundException(UUID id) {
         super(String.format(Constants.TOUR_DATE_NOT_FOUND, id));
     }
-    
+
 }

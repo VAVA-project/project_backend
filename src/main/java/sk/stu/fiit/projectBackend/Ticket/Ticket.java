@@ -25,14 +25,20 @@ import sk.stu.fiit.projectBackend.TourDate.TourDate;
 import sk.stu.fiit.projectBackend.User.AppUser;
 
 /**
+ * Ticket holds data about ticket for specific TourDate.
  *
  * @author Adam Bublavý
+ *
+ * @see TourDate
+ * @see TourOffer
+ * @see CartTicket
+ * @see AppUser
  */
 @Data
 @Entity
 @Table
 public class Ticket implements Serializable {
-    
+
     @Id
     @GeneratedValue(generator = "uuid_ticket")
     @GenericGenerator(
@@ -44,22 +50,27 @@ public class Ticket implements Serializable {
             nullable = false
     )
     private UUID id;
-    
+
     private LocalDateTime purchasedAt;
-    
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
-    
+
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-    
+
+    /**
+     * When this ticket is added to the user's cart, the ticket is locked for
+     * specific amount of time to prevent other users to lock this ticket. When
+     * the time passes, the ticket will be unlocked again for other users.
+     */
     private LocalDateTime lockExpiresAt;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     @JsonIgnore
     private AppUser user;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "tourDateId",
@@ -68,11 +79,14 @@ public class Ticket implements Serializable {
     )
     @JsonIgnore
     private TourDate tourDate;
-    
+
     @OneToOne(mappedBy = "ticket")
     @JsonIgnore
     private CartTicket cartTicket;
 
+    /**
+     * Creates new Ticket
+     */
     public Ticket() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();

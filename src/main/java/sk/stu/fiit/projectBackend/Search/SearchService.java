@@ -27,23 +27,35 @@ public class SearchService {
 
     private final TourOfferRepository tourOfferRepository;
     private final RatingRepository ratingRepository;
-    
-    public Page<TourOfferResponse> searchTourOffers(String query, TourOffersDataPage page) {
+
+    /**
+     * Searches TourOffers which contains expression specified in query in their
+     * start place or destination place.
+     *
+     * @param query Query specified by user which will be used to find
+     * TourOffers
+     * @param page Paging data
+     * @return Returns paged TourOffers mapped in TourOfferResponse
+     */
+    public Page<TourOfferResponse> searchTourOffers(String query,
+            TourOffersDataPage page) {
         Sort sort = Sort.by(page.getSortDirection(), page.getSortBy());
         Pageable pageable = PageRequest.of(page.getPageNumber(), page.
                 getPageSize(), sort);
 
-        Page<TourOffer> response = tourOfferRepository.findByDeletedAtIsNullAndStartPlaceContainingOrDestinationPlaceContaining(
-                query, query,
-                pageable);
-        
-        Page<TourOfferResponse> transformedResponse = response.map(TourOfferResponse::new);
+        Page<TourOffer> response = tourOfferRepository.
+                findByDeletedAtIsNullAndStartPlaceContainingOrDestinationPlaceContaining(
+                        query, query,
+                        pageable);
+
+        Page<TourOfferResponse> transformedResponse = response.map(
+                TourOfferResponse::new);
         transformedResponse.stream().forEach(e -> {
             double averageRating = ratingRepository.calculateAverageRating(
                     e.getId()).orElse(-1.0);
             e.setAverageRating(averageRating);
         });
-        
+
         return transformedResponse;
     }
 

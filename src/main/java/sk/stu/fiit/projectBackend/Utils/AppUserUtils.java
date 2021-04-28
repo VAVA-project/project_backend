@@ -24,6 +24,13 @@ public class AppUserUtils {
 
     private final AppUserRepository appUserRepository;
 
+    /**
+     * Fetch data about user who made the request
+     *
+     * @return Returns user's data
+     *
+     * @see AppUser
+     */
     public AppUser getCurrentlyLoggedUser() {
         String userEmail = SecurityContextHolder.getContext().
                 getAuthentication().getName();
@@ -34,13 +41,20 @@ public class AppUserUtils {
 
         return user;
     }
-    
+
+    /**
+     * Checks if the user is guide.
+     *
+     * @param user
+     *
+     * @throws PermissionDeniedException
+     */
     public void checkIfIsGuide(AppUser user) {
-        if(user == null) {
+        if (user == null) {
             return;
         }
-        
-        if(user.getType() != AppUserTypes.GUIDE) {
+
+        if (user.getType() != AppUserTypes.GUIDE) {
             throw new PermissionDeniedException();
         }
     }

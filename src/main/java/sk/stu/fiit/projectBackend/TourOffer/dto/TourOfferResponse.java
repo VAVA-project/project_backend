@@ -18,16 +18,16 @@ import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 @Data
 @AllArgsConstructor
 public class TourOfferResponse {
-    
+
     private UUID id;
     private UUID creatorId;
     private String startPlace;
     private String destinationPlace;
     private String description;
-    
+
     private double pricePerPerson;
     private double averageRating = -1;
-    
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -41,5 +41,5 @@ public class TourOfferResponse {
         this.createdAt = offer.getCreatedAt();
         this.updatedAt = offer.getUpdatedAt();
     }
-    
+
 }
