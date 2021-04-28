@@ -50,6 +50,15 @@ public class AppUserService implements UserDetailsService {
     private final JWTUtil jwtUtil;
     private final AppUserUtils appUserUtils;
 
+    /**
+     * Finds user by the user's email
+     *
+     * @param email User's email
+     * @return Returns UserDetails of the user
+     * @throws UsernameNotFoundException
+     *
+     * @see AppUser
+     */
     @Override
     public UserDetails loadUserByUsername(String email) throws
             UsernameNotFoundException {
@@ -58,6 +67,16 @@ public class AppUserService implements UserDetailsService {
                         format(USER_NOT_FOUND, email)));
     }
 
+    /**
+     * Registers new user and logs in.
+     *
+     * @param request Data about user
+     * @return Returns newly created AppUser mapped into RegisterResponse.
+     *
+     * @see AppUser
+     * @see RegisterRequest
+     * @see RegisterResponse
+     */
     public RegisterResponse register(RegisterRequest request) {
         boolean userExists = appUserRepository.findByEmail(request.getEmail()).
                 isPresent();
@@ -83,6 +102,16 @@ public class AppUserService implements UserDetailsService {
         return new RegisterResponse(jwtToken);
     }
 
+    /**
+     * Logs in the user.
+     *
+     * @param request Log in data from the user
+     * @return Returns log in data mapped into LoginResponse
+     *
+     * @see AppUser
+     * @see LoginRequest
+     * @see LoginResponse
+     */
     public LoginResponse login(LoginRequest request) {
         Optional<AppUser> userOptional = appUserRepository.findByEmail(
                 request.getEmail());
@@ -104,12 +133,26 @@ public class AppUserService implements UserDetailsService {
         return new LoginResponse(jwtToken, user);
     }
 
+    /**
+     * @return Returns data about currently logged in user.
+     *
+     * @see AppUser
+     */
     public AppUser me() {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
         return user;
     }
 
+    /**
+     * Updates user's data
+     *
+     * @param request Update data sent by user
+     * @return Returns updated AppUser
+     *
+     * @see AppUser
+     * @see UpdateRequest
+     */
     public AppUser updateUser(UpdateRequest request) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
         int hashBeforeUpdate = user.hashCode();
@@ -141,6 +184,14 @@ public class AppUserService implements UserDetailsService {
         return user;
     }
 
+    /**
+     * Gets data about specific user
+     *
+     * @param userId ID of the user
+     * @return Returns data about specific user
+     *
+     * @see AppUser
+     */
     public AppUser getUser(UUID userId) {
         AppUser user = appUserRepository.findById(userId).orElseThrow(
                 () -> new UserNotFoundException(userId));
@@ -148,6 +199,16 @@ public class AppUserService implements UserDetailsService {
         return user;
     }
 
+    /**
+     * Gets TourOffers created by the user
+     *
+     * @param page Data about pagination
+     * @return Returns Page of user's TourOffers
+     *
+     * @see TourOffer
+     * @see AppUser
+     * @see Page
+     */
     public Page<TourOfferResponse> getUsersTourOffers(TourOffersDataPage page) {
         AppUser user = appUserUtils.getCurrentlyLoggedUser();
 
@@ -166,7 +227,7 @@ public class AppUserService implements UserDetailsService {
                     e.getId()).orElse(-1.0);
             e.setAverageRating(averageRating);
         });
-        
+
         return transformedUserOffers;
     }
 

@@ -6,11 +6,13 @@
 package sk.stu.fiit.projectBackend.User;
 
 /**
+ * AppUserTypes represents different types of AppUser. Each AppUserType has
+ * different permissions.
  *
  * @author Adam Bublavý
  */
 public enum AppUserTypes {
-    
+
     GUIDE, NORMAL_USER
-    
+
 }
