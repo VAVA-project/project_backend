@@ -46,14 +46,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         APIError response = new APIError(HttpStatus.BAD_REQUEST, e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
-    
+
     @ExceptionHandler({TicketPurchaseTimeExpiredException.class})
-    protected ResponseEntity<Object> handleTicketsExpiredException(TicketPurchaseTimeExpiredException e) {
+    protected ResponseEntity<Object> handleTicketsExpiredException(
+            TicketPurchaseTimeExpiredException e) {
         Map<String, List<UUID>> errors = new HashMap<>();
         errors.put("ticket", e.getExpiredTickets());
-        
+
         APIError response = new APIError(HttpStatus.BAD_REQUEST, errors);
-        
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
@@ -74,6 +75,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(status).body(response);
     }
 
+    /**
+     * Formats raised errors
+     *
+     * @param ex Exceptions
+     * @return Returns APIError with formatted errors
+     *
+     * @see APIError
+     */
     private APIError formatErrors(BindException ex) {
         Map<String, String> errors = new HashMap<>();
 

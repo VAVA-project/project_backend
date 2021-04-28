@@ -9,6 +9,8 @@ import java.util.UUID;
 import sk.stu.fiit.projectBackend.Other.Constants;
 
 /**
+ * TourOfferNotFoundException is thrown when TourOffer with specific ID is not
+ * found
  *
  * @author Adam Bublavý
  */
@@ -17,5 +19,5 @@ public class TourOfferNotFoundException extends RecordNotFoundException {
     public TourOfferNotFoundException(UUID id) {
         super(String.format(Constants.TOUR_OFFER_NOT_FOUND, id));
     }
-    
+
 }

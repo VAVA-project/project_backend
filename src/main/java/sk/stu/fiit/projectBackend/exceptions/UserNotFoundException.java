@@ -9,13 +9,14 @@ import java.util.UUID;
 import static sk.stu.fiit.projectBackend.Other.Constants.USER_WITH_ID_NOT_FOUND;
 
 /**
+ * UserNotFoundException is thrown when user with specific ID is not found
  *
  * @author Adam Bublavý
  */
 public class UserNotFoundException extends RecordNotFoundException {
-    
+
     public UserNotFoundException(UUID id) {
         super(String.format(USER_WITH_ID_NOT_FOUND, id));
     }
-    
+
 }

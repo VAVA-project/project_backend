@@ -9,6 +9,7 @@ import java.util.UUID;
 import static sk.stu.fiit.projectBackend.Other.Constants.TICKET_NOT_FOUND;
 
 /**
+ * TicketNotFoundException is thrown when Ticket with specific ID is not found
  *
  * @author Adam Bublavý
  */
@@ -17,5 +18,5 @@ public class TicketNotFoundException extends RecordNotFoundException {
     public TicketNotFoundException(UUID id) {
         super(String.format(TICKET_NOT_FOUND, id));
     }
-    
+
 }

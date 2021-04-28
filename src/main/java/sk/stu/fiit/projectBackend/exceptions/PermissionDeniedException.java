@@ -8,17 +8,19 @@ package sk.stu.fiit.projectBackend.exceptions;
 import static sk.stu.fiit.projectBackend.Other.Constants.PERMISSION_DENIED;
 
 /**
+ * PermissionDeniedException is thrown when the user has no permission for
+ * specific action
  *
  * @author Adam Bublavý
  */
 public class PermissionDeniedException extends RuntimeException {
-    
+
     public PermissionDeniedException() {
         super(PERMISSION_DENIED);
     }
-    
+
     public PermissionDeniedException(String message) {
         super(message);
     }
-    
+
 }

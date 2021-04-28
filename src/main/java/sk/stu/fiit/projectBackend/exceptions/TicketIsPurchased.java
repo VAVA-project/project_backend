@@ -6,6 +6,8 @@
 package sk.stu.fiit.projectBackend.exceptions;
 
 /**
+ * TicketIsPurchased is thrown when the user wants add Ticket to his cart that
+ * has been already purchased.
  *
  * @author Adam Bublavý
  */
@@ -14,5 +16,5 @@ public class TicketIsPurchased extends RuntimeException {
     public TicketIsPurchased(String message) {
         super(message);
     }
-    
+
 }
