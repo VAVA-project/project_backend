@@ -21,6 +21,10 @@ import sk.stu.fiit.projectBackend.User.AppUserService;
 import sk.stu.fiit.projectBackend.Utils.JWTUtil;
 
 /**
+ * JWTFilter is used to check if JWT token is valid and if so it will forward
+ * request to next filter
+ *
+ * Based on https://www.youtube.com/watch?v=X80nJ5T7YpE
  *
  * @author Adam Bublavý
  */
@@ -48,7 +52,8 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String jwt = authorization.substring(JWT_PREFIX);
         String email = jwtUtil.extractUsernameFromToken(jwt);
-        
+
+        // check if the user has been authenticated
         if (email != null && SecurityContextHolder.getContext().
                 getAuthentication() == null) {
             UserDetails userDetails = this.appUserService.loadUserByUsername(
@@ -63,6 +68,7 @@ public class JWTFilter extends OncePerRequestFilter {
                         new WebAuthenticationDetailsSource().buildDetails(
                                 request));
 
+                // authenticate user
                 SecurityContextHolder.getContext().setAuthentication(
                         usernamePasswordAuthenticationToken);
             }
