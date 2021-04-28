@@ -84,6 +84,9 @@ public class Ticket implements Serializable {
     @JsonIgnore
     private CartTicket cartTicket;
 
+    /**
+     * Creates new Ticket
+     */
     public Ticket() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();

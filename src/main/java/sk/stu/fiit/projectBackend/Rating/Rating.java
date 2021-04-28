@@ -75,6 +75,10 @@ public class Rating implements Serializable {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    /**
+     * Creates new Rating
+     * @param rating User's rating
+     */
     public Rating(int rating) {
         this.rating = rating;
         this.createdAt = LocalDateTime.now();
