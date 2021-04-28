@@ -25,13 +25,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import sk.stu.fiit.projectBackend.Rating.Rating;
+import sk.stu.fiit.projectBackend.Ticket.Ticket;
 import sk.stu.fiit.projectBackend.TourDate.TourDate;
 import sk.stu.fiit.projectBackend.TourOffer.dto.CreateTourOfferRequest;
 import sk.stu.fiit.projectBackend.User.AppUser;
 
 /**
+ * TourOffer holds general data about guide's tour offer.
  *
  * @author Adam Bublavý
+ *
+ * @see TourDate
  */
 @Data
 @NoArgsConstructor
@@ -60,7 +64,7 @@ public class TourOffer implements Serializable {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false, name="price_per_person")
+    @Column(nullable = false, name = "price_per_person")
     private double pricePerPerson;
 
     @Column(nullable = false)
@@ -88,14 +92,25 @@ public class TourOffer implements Serializable {
     )
     @JsonIgnore
     private List<TourDate> tourDates = new ArrayList<>(0);
-    
+
     @OneToMany(
             cascade = CascadeType.ALL,
             mappedBy = "tourOffer"
     )
     @JsonIgnore
     private List<Rating> ratings = new ArrayList<>(0);
-    
+
+    /**
+     * Creates new TourOffer
+     *
+     * @param startPlace Place where the tour starts
+     * @param destinationPlace Place where the tour ends
+     * @param description Tour's description
+     * @param pricePerPerson Price per ticket
+     *
+     * @see TourDate
+     * @see Ticket
+     */
     public TourOffer(String startPlace, String destinationPlace,
             String description, double pricePerPerson) {
         this.startPlace = startPlace;
@@ -106,11 +121,25 @@ public class TourOffer implements Serializable {
         this.updatedAt = LocalDateTime.now();
     }
 
+    /**
+     * Creates new TourOffer from the request
+     *
+     * @param request TourOffer mapped in CreateTourOfferRequest
+     *
+     * @see CreateTourOfferRequest
+     */
     public TourOffer(CreateTourOfferRequest request) {
         this(request.getStartPlace(), request.getDestinationPlace(), request.
                 getDescription(), request.getPricePerPerson());
     }
 
+    /**
+     * Adds new TourDate for this TourOffer
+     *
+     * @param tourDate TourDate which will be added for this TourOffer
+     *
+     * @see TourDate
+     */
     public void addTourDate(TourDate tourDate) {
         if (tourDate == null) {
             return;
@@ -120,6 +149,13 @@ public class TourOffer implements Serializable {
         tourDate.setTourOffer(this);
     }
 
+    /**
+     * Removes the tourDate from this TourOffer
+     *
+     * @param tourDate TourDate which will be removed from this TourOffer
+     *
+     * @see TourDate
+     */
     public void removeTourDate(TourDate tourDate) {
         if (tourDate == null) {
             return;
@@ -128,17 +164,35 @@ public class TourOffer implements Serializable {
         this.tourDates.remove(tourDate);
         tourDate.setTourOffer(null);
     }
-    
+
+    /**
+     * Adds rating for this TourOffer
+     *
+     * @param rating User's rating
+     *
+     * @see Rating
+     */
     public void addRating(Rating rating) {
-        if(rating == null) return;
-        
+        if (rating == null) {
+            return;
+        }
+
         this.ratings.add(rating);
         rating.setTourOffer(this);
     }
-    
+
+    /**
+     * Removes rating for this TourOffer
+     *
+     * @param rating User's rating
+     *
+     * @see Rating
+     */
     public void removeRating(Rating rating) {
-        if(rating == null) return;
-        
+        if (rating == null) {
+            return;
+        }
+
         this.ratings.remove(rating);
         rating.setTourOffer(null);
     }
