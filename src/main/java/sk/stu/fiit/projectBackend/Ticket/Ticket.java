@@ -22,6 +22,7 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import sk.stu.fiit.projectBackend.Cart.CartTicket;
 import sk.stu.fiit.projectBackend.TourDate.TourDate;
+import sk.stu.fiit.projectBackend.TourOffer.TourOffer;
 import sk.stu.fiit.projectBackend.User.AppUser;
 
 /**
